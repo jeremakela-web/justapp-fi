@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Just.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f8faf8;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #eef2ee;
       color: #1a1a1a;
       min-height: 100vh;
     }
@@ -20,116 +20,109 @@
     /* ── HEADER ── */
     .site-header {
       background: #1a1a1a;
-      padding: 0 24px;
       height: 56px;
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .header-left { display: flex; align-items: center; gap: 20px; }
-    .logo {
+    .header-logo {
       font-size: 1.35rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #fff;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       text-decoration: none;
     }
-    .logo .dot { color: #52b788; }
+    .header-logo .dot { color: #52b788; }
     .back-link {
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 4px;
       transition: color 0.15s;
     }
-    .back-link:hover { color: #fff; }
+    .back-link:hover { color: rgba(255,255,255,0.9); }
 
-    /* language switcher */
-    .lang-switcher {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-    .lang-btn {
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.45);
-      font-family: inherit;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 4px;
-      letter-spacing: 0.04em;
-      transition: color 0.15s, background 0.15s;
-    }
-    .lang-btn:hover { color: #fff; }
-    .lang-btn.active { color: #52b788; }
-    .lang-sep { color: rgba(255,255,255,0.2); font-size: 0.75rem; }
-
-    /* ── AUTH VIEW ── */
+    /* ── AUTH BODY ── */
     #auth-view { display: block; }
-
     .auth-body {
       min-height: calc(100vh - 56px);
-      background: #f8faf8;
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 24px 16px;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
+    /* ── CARD ── */
     .auth-card {
       background: #fff;
-      border-radius: 16px;
-      padding: 36px 40px;
+      border-radius: 22px;
+      padding: 40px 32px 36px;
       width: 100%;
-      max-width: 440px;
-      border: 1px solid #ddeae3;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.11), 0 1px 4px rgba(0,0,0,0.06);
+      max-width: 390px;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
     }
-    @media (max-width: 480px) { .auth-card { padding: 28px 20px; } }
+    @media (max-width: 440px) { .auth-card { padding: 32px 20px 28px; } }
 
-    .auth-heading {
-      font-size: 1.3rem;
-      font-weight: 700;
+    /* logo inside card */
+    .card-logo {
+      text-align: center;
+      font-size: 2.4rem;
+      font-weight: 800;
       color: #111;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .card-logo .dot { color: #2d6a4f; }
+
+    .card-subtitle {
+      text-align: center;
+      font-size: 0.875rem;
+      color: #9ca3af;
+      font-weight: 400;
       margin-bottom: 28px;
-      line-height: 1.35;
     }
 
-    /* ── TABS ── */
+    /* ── SEGMENT TABS ── */
     .tabs {
+      background: #f0f0f0;
+      border-radius: 100px;
+      padding: 4px;
       display: flex;
-      border-bottom: 2px solid #e5e7eb;
       margin-bottom: 28px;
     }
     .tab-btn {
-      padding: 10px 18px;
+      flex: 1;
+      padding: 10px 0;
       border: none;
-      background: none;
+      background: transparent;
+      border-radius: 100px;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: #6b7280;
       cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: color 0.15s, border-color 0.15s;
+      transition: background 0.18s, color 0.18s;
     }
-    .tab-btn.active { color: #1b4332; border-bottom-color: #1b4332; }
+    .tab-btn.active {
+      background: #2d6a4f;
+      color: #fff;
+    }
     .tab-btn:hover:not(.active) { color: #374151; }
 
     /* ── FORM ── */
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 18px; }
     label {
       display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #4b5563;
+      margin-bottom: 8px;
     }
     input[type="text"],
     input[type="email"],
@@ -140,43 +133,41 @@
     select,
     textarea {
       width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 8px;
+      padding: 13px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
       font-size: 0.95rem;
       font-family: inherit;
       color: #111;
       background: #fff;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
+    input::placeholder { color: #d1d5db; }
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: #52b788;
-      box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+      border-color: #2d6a4f;
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
     }
 
     /* ── BUTTONS ── */
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: none;
-      border-radius: 8px;
+      border-radius: 100px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s, transform 0.1s;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-green { background: #2d6a4f; color: #fff; margin-top: 8px; }
-    .btn-green:hover { background: #245c44; }
-    .btn-ghost {
-      background: none;
-      color: #6b7280;
-      border: 1.5px solid #e5e7eb;
       margin-top: 10px;
     }
-    .btn-ghost:hover { background: #f3f4f6; color: #374151; }
+    .btn:active { transform: scale(0.98); }
+    .btn-green  { background: #2d6a4f; color: #fff; }
+    .btn-green:hover { background: #245c44; }
+    .btn-ghost  { background: none; color: #6b7280; border: 1.5px solid #e5e7eb; }
+    .btn-ghost:hover { background: #f9fafb; }
+
     .btn-logout {
       background: transparent;
       color: #dc2626;
@@ -194,7 +185,7 @@
     /* ── MESSAGES ── */
     .msg {
       padding: 11px 14px;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 16px;
       font-size: 0.875rem;
       display: none;
@@ -206,15 +197,15 @@
     /* ── CHECK EMAIL ── */
     #check-email-view { display: none; text-align: center; padding: 8px 0 4px; }
     .check-email-icon {
-      width: 56px; height: 56px;
+      width: 60px; height: 60px;
       background: #f0fdf4;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 20px;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
     }
-    #check-email-view h2 { font-size: 1.15rem; font-weight: 700; color: #111; margin-bottom: 12px; }
-    #check-email-view p  { font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; line-height: 1.6; }
+    #check-email-view h2  { font-size: 1.15rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+    #check-email-view p   { font-size: 0.9rem; color: #6b7280; line-height: 1.6; margin-bottom: 6px; }
     #check-email-view strong { color: #374151; }
 
     /* ── APP VIEW ── */
@@ -225,21 +216,17 @@
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 10;
     }
-    .app-logo { font-size: 1.25rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .app-logo { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
     .app-logo .dot { color: #52b788; }
     .app-user { font-size: 0.825rem; color: #9ca3af; }
     .app-container { max-width: 720px; margin: 0 auto; padding: 32px 16px; }
-    .card {
-      background: #fff; border-radius: 12px; padding: 28px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px;
-    }
+    .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; }
     .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #111; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
     .booking-item {
-      border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 16px;
-      margin-bottom: 10px; display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 12px;
+      border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
     }
     .booking-item:last-child { margin-bottom: 0; }
     .booking-date { font-weight: 600; color: #111; font-size: 0.95rem; }
@@ -257,55 +244,51 @@
 <!-- AUTH VIEW -->
 <div id="auth-view">
   <header class="site-header">
-    <div class="header-left">
-      <a href="https://getjust.fi" class="logo">Just<span class="dot">.</span></a>
-      <a href="https://getjust.fi" class="back-link">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        <span data-i18n="backLink">Etusivulle</span>
-      </a>
-    </div>
-    <div class="lang-switcher">
-      <button class="lang-btn" id="lang-fi" onclick="setLang('fi')">FI</button>
-      <span class="lang-sep">|</span>
-      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
-    </div>
+    <a href="https://getjust.fi" class="header-logo">Just<span class="dot">.</span></a>
+    <a href="https://getjust.fi" class="back-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-i18n="backLink">Etusivulle</span>
+    </a>
   </header>
 
   <div class="auth-body">
     <div class="auth-card">
 
       <div id="auth-main">
-        <h1 class="auth-heading" data-i18n="heading">Kirjaudu tai luo asiakastili</h1>
+        <!-- Logo inside card -->
+        <div class="card-logo">Just<span class="dot">.</span></div>
+        <p class="card-subtitle" data-i18n="heading">Kirjaudu tai luo asiakastili</p>
 
+        <!-- Segment control -->
         <div class="tabs">
           <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')" data-i18n="tabLogin">Kirjaudu</button>
           <button class="tab-btn"        id="tab-signup-btn" onclick="switchTab('signup')" data-i18n="tabSignup">Luo tili</button>
         </div>
 
-        <!-- Kirjaudu / Sign in -->
+        <!-- Login -->
         <div id="tab-login">
           <div class="msg msg-error" id="login-error"></div>
           <div class="form-group">
-            <label for="login-email" data-i18n="emailLabel">S&#228;hk&#246;posti</label>
-            <input type="email" id="login-email" data-i18n-placeholder="emailPlaceholder" placeholder="sin&#228;@esimerkki.fi" autocomplete="email" />
+            <label for="login-email" data-i18n="emailLabel">S&auml;hk&ouml;posti</label>
+            <input type="email" id="login-email" data-i18n-placeholder="emailPlaceholder" placeholder="oma@email.fi" autocomplete="email" />
           </div>
           <div class="form-group">
             <label for="login-password" data-i18n="passwordLabel">Salasana</label>
-            <input type="password" id="login-password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" />
+            <input type="password" id="login-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password" />
           </div>
-          <button class="btn btn-green" onclick="handleLogin()" data-i18n="loginBtn">Kirjaudu sis&#228;&#228;n</button>
+          <button class="btn btn-green" onclick="handleLogin()" data-i18n="loginBtn">Kirjaudu sis&auml;&auml;n</button>
         </div>
 
-        <!-- Luo tili / Create account -->
+        <!-- Signup -->
         <div id="tab-signup" style="display:none">
           <div class="msg msg-error" id="signup-error"></div>
           <div class="form-group">
             <label for="signup-name" data-i18n="nameLabel">Koko nimi</label>
-            <input type="text" id="signup-name" data-i18n-placeholder="namePlaceholder" placeholder="Matti Meik&#228;l&#228;inen" autocomplete="name" />
+            <input type="text" id="signup-name" data-i18n-placeholder="namePlaceholder" placeholder="Matti Meik&auml;l&auml;inen" autocomplete="name" />
           </div>
           <div class="form-group">
-            <label for="signup-email" data-i18n="emailLabel">S&#228;hk&#246;posti</label>
-            <input type="email" id="signup-email" data-i18n-placeholder="emailPlaceholder" placeholder="sin&#228;@esimerkki.fi" autocomplete="email" />
+            <label for="signup-email" data-i18n="emailLabel">S&auml;hk&ouml;posti</label>
+            <input type="email" id="signup-email" data-i18n-placeholder="emailPlaceholder" placeholder="oma@email.fi" autocomplete="email" />
           </div>
           <div class="form-group">
             <label for="signup-phone" data-i18n="phoneLabel">Puhelinnumero</label>
@@ -313,7 +296,7 @@
           </div>
           <div class="form-group">
             <label for="signup-password" data-i18n="passwordLabel">Salasana</label>
-            <input type="password" id="signup-password" data-i18n-placeholder="newPasswordPlaceholder" placeholder="V&#228;hint&#228;&#228;n 8 merkki&#228;" autocomplete="new-password" />
+            <input type="password" id="signup-password" data-i18n-placeholder="newPasswordPlaceholder" placeholder="V&auml;hint&auml;&auml;n 8 merkki&auml;" autocomplete="new-password" />
           </div>
           <button class="btn btn-green" onclick="handleSignup()" data-i18n="signupBtn">Luo tili</button>
         </div>
@@ -322,10 +305,10 @@
       <!-- Check-email state -->
       <div id="check-email-view">
         <div class="check-email-icon">&#9993;</div>
-        <h2 data-i18n="checkHeading">Tarkista s&#228;hk&#246;postisi</h2>
-        <p><span data-i18n="checkText">L&#228;hetimme vahvistuslinkin osoitteeseen</span><br><strong id="confirm-email-display"></strong></p>
-        <p style="margin-top:8px" data-i18n="checkSubtext">Klikkaa linkki&#228; kirjautuaksesi sis&#228;&#228;n automaattisesti.</p>
-        <button class="btn btn-ghost" style="margin-top:24px" onclick="showAuthMain()" data-i18n="backBtn">Takaisin kirjautumiseen</button>
+        <h2 data-i18n="checkHeading">Tarkista s&auml;hk&ouml;postisi</h2>
+        <p><span data-i18n="checkText">L&auml;hetimme vahvistuslinkin osoitteeseen</span><br><strong id="confirm-email-display"></strong></p>
+        <p data-i18n="checkSubtext">Klikkaa linkki&auml; kirjautuaksesi sis&auml;&auml;n automaattisesti.</p>
+        <button class="btn btn-ghost" style="margin-top:20px" onclick="showAuthMain()" data-i18n="backBtn">Takaisin kirjautumiseen</button>
       </div>
 
     </div>
@@ -348,7 +331,7 @@
       <div class="msg msg-success" id="booking-success"></div>
       <div class="form-row">
         <div class="form-group">
-          <label for="booking-date">P&#228;iv&#228;m&#228;&#228;r&#228;</label>
+          <label for="booking-date">P&auml;iv&auml;m&auml;&auml;r&auml;</label>
           <input type="date" id="booking-date" />
         </div>
         <div class="form-group">
@@ -361,7 +344,7 @@
         <select id="booking-service">
           <option value="kotisiivous">Kotisiivous</option>
           <option value="perussiivous">Perussiivous</option>
-          <option value="syvassiivous">Syv&#228;ssiivous</option>
+          <option value="syvassiivous">Syv&auml;ssiivous</option>
           <option value="ikkunanpesu">Ikkunanpesu</option>
           <option value="muuttosiivous">Muuttosiivous</option>
         </select>
@@ -371,7 +354,7 @@
         <input type="text" id="booking-address" placeholder="Kadunnimi 1, Helsinki" />
       </div>
       <div class="form-group">
-        <label for="booking-notes">Lis&#228;tiedot (valinnainen)</label>
+        <label for="booking-notes">Lis&auml;tiedot (valinnainen)</label>
         <textarea id="booking-notes" rows="3" placeholder="Esim. pinta-ala, erityistoiveet..."></textarea>
       </div>
       <button class="btn btn-green" onclick="handleBooking()">Varaa aika</button>
@@ -392,48 +375,48 @@
   /* ── i18n ── */
   const T = {
     fi: {
-      backLink:           'Etusivulle',
-      heading:            'Kirjaudu tai luo asiakastili',
-      tabLogin:           'Kirjaudu',
-      tabSignup:          'Luo tili',
-      emailLabel:         'Sähköposti',
-      emailPlaceholder:   'sinä@esimerkki.fi',
-      passwordLabel:      'Salasana',
-      nameLabel:          'Koko nimi',
-      namePlaceholder:    'Matti Meikäläinen',
-      phoneLabel:         'Puhelinnumero',
+      backLink:            'Etusivulle',
+      heading:             'Kirjaudu tai luo asiakastili',
+      tabLogin:            'Kirjaudu',
+      tabSignup:           'Luo tili',
+      emailLabel:          'Sähköposti',
+      emailPlaceholder:    'oma@email.fi',
+      passwordLabel:       'Salasana',
+      nameLabel:           'Koko nimi',
+      namePlaceholder:     'Matti Meikäläinen',
+      phoneLabel:          'Puhelinnumero',
       newPasswordPlaceholder: 'Vähintään 8 merkkiä',
-      loginBtn:           'Kirjaudu sisään',
-      signupBtn:          'Luo tili',
-      checkHeading:       'Tarkista sähköpostisi',
-      checkText:          'Lähetimme vahvistuslinkin osoitteeseen',
-      checkSubtext:       'Klikkaa linkkiä kirjautuaksesi sisään automaattisesti.',
-      backBtn:            'Takaisin kirjautumiseen',
-      errEmpty:           'Täytä kaikki kentät.',
-      errEmptySignup:     'Täytä kaikki pakolliset kentät.',
-      errPasswordShort:   'Salasanan on oltava vähintään 8 merkkiä.',
+      loginBtn:            'Kirjaudu sisään',
+      signupBtn:           'Luo tili',
+      checkHeading:        'Tarkista sähköpostisi',
+      checkText:           'Lähetimme vahvistuslinkin osoitteeseen',
+      checkSubtext:        'Klikkaa linkkiä kirjautuaksesi sisään automaattisesti.',
+      backBtn:             'Takaisin kirjautumiseen',
+      errEmpty:            'Täytä kaikki kentät.',
+      errEmptySignup:      'Täytä kaikki pakolliset kentät.',
+      errPasswordShort:    'Salasanan on oltava vähintään 8 merkkiä.',
     },
     en: {
-      backLink:           'Back to home',
-      heading:            'Sign in or create an account',
-      tabLogin:           'Sign in',
-      tabSignup:          'Create account',
-      emailLabel:         'Email',
-      emailPlaceholder:   'you@example.com',
-      passwordLabel:      'Password',
-      nameLabel:          'Full name',
-      namePlaceholder:    'John Smith',
-      phoneLabel:         'Phone number',
+      backLink:            'Back to home',
+      heading:             'Sign in or create an account',
+      tabLogin:            'Sign in',
+      tabSignup:           'Create account',
+      emailLabel:          'Email',
+      emailPlaceholder:    'you@example.com',
+      passwordLabel:       'Password',
+      nameLabel:           'Full name',
+      namePlaceholder:     'John Smith',
+      phoneLabel:          'Phone number',
       newPasswordPlaceholder: 'At least 8 characters',
-      loginBtn:           'Sign in',
-      signupBtn:          'Create account',
-      checkHeading:       'Check your email',
-      checkText:          'We sent a confirmation link to',
-      checkSubtext:       'Click the link to sign in automatically.',
-      backBtn:            'Back to sign in',
-      errEmpty:           'Please fill in all fields.',
-      errEmptySignup:     'Please fill in all required fields.',
-      errPasswordShort:   'Password must be at least 8 characters.',
+      loginBtn:            'Sign in',
+      signupBtn:           'Create account',
+      checkHeading:        'Check your email',
+      checkText:           'We sent a confirmation link to',
+      checkSubtext:        'Click the link to sign in automatically.',
+      backBtn:             'Back to sign in',
+      errEmpty:            'Please fill in all fields.',
+      errEmptySignup:      'Please fill in all required fields.',
+      errPasswordShort:    'Password must be at least 8 characters.',
     },
   };
 
@@ -442,29 +425,20 @@
   function detectLang() {
     const stored = localStorage.getItem('lang');
     if (stored === 'fi' || stored === 'en') return stored;
-    const browser = (navigator.language || 'fi').toLowerCase();
-    return browser.startsWith('en') ? 'en' : 'fi';
+    return (navigator.language || 'fi').toLowerCase().startsWith('en') ? 'en' : 'fi';
   }
 
   function applyTranslations() {
     const t = T[lang];
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (t[key] !== undefined) el.textContent = t[key];
+      const v = t[el.getAttribute('data-i18n')];
+      if (v !== undefined) el.textContent = v;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-      const key = el.getAttribute('data-i18n-placeholder');
-      if (t[key] !== undefined) el.placeholder = t[key];
+      const v = t[el.getAttribute('data-i18n-placeholder')];
+      if (v !== undefined) el.placeholder = v;
     });
-    document.getElementById('lang-fi').classList.toggle('active', lang === 'fi');
-    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-  }
-
-  function setLang(l) {
-    lang = l;
-    localStorage.setItem('lang', l);
-    applyTranslations();
   }
 
   function t(key) { return T[lang][key] || key; }
@@ -521,7 +495,6 @@
   }
 
   /* ── AUTH HANDLERS ── */
-
   async function handleLogin() {
     const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
@@ -539,10 +512,7 @@
     if (password.length < 8)          return flash('signup-error', t('errPasswordShort'), 'error');
     const { error } = await sb.auth.signUp({
       email, password,
-      options: {
-        emailRedirectTo: 'https://justapp.fi',
-        data: { full_name: name, phone },
-      },
+      options: { emailRedirectTo: 'https://justapp.fi', data: { full_name: name, phone } },
     });
     if (error) flash('signup-error', error.message, 'error');
     else showCheckEmail(email);
@@ -550,8 +520,7 @@
 
   async function handleLogout() { await sb.auth.signOut(); }
 
-  /* ── BOOKING HANDLERS ── */
-
+  /* ── BOOKING ── */
   async function getToken() {
     const { data } = await sb.auth.getSession();
     return data?.session?.access_token;
@@ -571,57 +540,40 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ service_date: date, service_time: time, service_type: service, address, notes }),
       });
-      if (!res.ok) {
-        const err = await res.json();
-        return flash('booking-error', err.error || 'Varaus epäonnistui.', 'error');
-      }
+      if (!res.ok) { const err = await res.json(); return flash('booking-error', err.error || 'Varaus epäonnistui.', 'error'); }
       flash('booking-success', 'Varaus tehty onnistuneesti!', 'success');
       document.getElementById('booking-address').value = '';
       document.getElementById('booking-notes').value   = '';
       loadBookings();
-    } catch {
-      flash('booking-error', 'Verkkovirhe. Yritä uudelleen.', 'error');
-    }
+    } catch { flash('booking-error', 'Verkkovirhe. Yritä uudelleen.', 'error'); }
   }
 
-  const SERVICE_LABELS = {
-    kotisiivous: 'Kotisiivous', perussiivous: 'Perussiivous',
-    syvassiivous: 'Syvässiivous', ikkunanpesu: 'Ikkunanpesu', muuttosiivous: 'Muuttosiivous',
-  };
-  const STATUS_LABELS = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
-  const STATUS_BADGES = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
+  const SERVICE_LABELS = { kotisiivous: 'Kotisiivous', perussiivous: 'Perussiivous', syvassiivous: 'Syvässiivous', ikkunanpesu: 'Ikkunanpesu', muuttosiivous: 'Muuttosiivous' };
+  const STATUS_LABELS  = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
+  const STATUS_BADGES  = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
 
   async function loadBookings() {
     const container = document.getElementById('bookings-list');
     container.innerHTML = '<div class="loading">Ladataan...</div>';
     const token = await getToken();
     try {
-      const res = await fetch('/.netlify/functions/customer-api', {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const res = await fetch('/.netlify/functions/customer-api', { headers: { 'Authorization': `Bearer ${token}` } });
       if (!res.ok) throw new Error();
       const bookings = await res.json();
-      if (!bookings.length) {
-        container.innerHTML = '<div class="empty">Ei varauksia vielä.</div>';
-        return;
-      }
+      if (!bookings.length) { container.innerHTML = '<div class="empty">Ei varauksia vielä.</div>'; return; }
       container.innerHTML = bookings.map(b => {
-        const d       = new Date(b.service_date);
-        const dateStr = d.toLocaleDateString('fi-FI', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const dateStr = new Date(b.service_date).toLocaleDateString('fi-FI', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const status  = b.status || 'pending';
-        return `
-          <div class="booking-item">
-            <div>
-              <div class="booking-date">${dateStr}${b.service_time ? ' klo ' + b.service_time : ''}</div>
-              <div class="booking-meta">${SERVICE_LABELS[b.service_type] || b.service_type} — ${b.address}</div>
-              ${b.notes ? `<div class="booking-meta">${b.notes}</div>` : ''}
-            </div>
-            <span class="badge ${STATUS_BADGES[status]}">${STATUS_LABELS[status] || status}</span>
-          </div>`;
+        return `<div class="booking-item">
+          <div>
+            <div class="booking-date">${dateStr}${b.service_time ? ' klo ' + b.service_time : ''}</div>
+            <div class="booking-meta">${SERVICE_LABELS[b.service_type] || b.service_type} — ${b.address}</div>
+            ${b.notes ? `<div class="booking-meta">${b.notes}</div>` : ''}
+          </div>
+          <span class="badge ${STATUS_BADGES[status]}">${STATUS_LABELS[status] || status}</span>
+        </div>`;
       }).join('');
-    } catch {
-      container.innerHTML = '<div class="empty">Varausten lataus epäonnistui.</div>';
-    }
+    } catch { container.innerHTML = '<div class="empty">Varausten lataus epäonnistui.</div>'; }
   }
 
   /* ── INIT ── */
