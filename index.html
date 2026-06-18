@@ -423,6 +423,11 @@
   let lang = 'fi';
 
   function detectLang() {
+    const urlParam = new URLSearchParams(window.location.search).get('lang');
+    if (urlParam === 'fi' || urlParam === 'en') {
+      localStorage.setItem('lang', urlParam);
+      return urlParam;
+    }
     const stored = localStorage.getItem('lang');
     if (stored === 'fi' || stored === 'en') return stored;
     return (navigator.language || 'fi').toLowerCase().startsWith('en') ? 'en' : 'fi';
