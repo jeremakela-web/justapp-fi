@@ -11,59 +11,74 @@ const CORS = {
   'Content-Type': 'application/json',
 };
 
+function ok(body, status = 200) {
+  return { statusCode: status, headers: CORS, body: JSON.stringify(body) };
+}
+function err(msg, status = 400) {
+  return { statusCode: status, headers: CORS, body: JSON.stringify({ error: msg }) };
+}
+
 exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers: CORS, body: '' };
-  }
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: CORS, body: '' };
 
   const token = (event.headers.authorization || '').replace('Bearer ', '').trim();
-  if (!token) {
-    return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
-  }
+  if (!token) return err('Unauthorized', 401);
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-  if (authError || !user) {
-    return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
-  }
+  if (authError || !user) return err('Unauthorized', 401);
 
   try {
-    if (event.httpMethod === 'GET') {
+    const body   = JSON.parse(event.body || '{}');
+    const action = body.action;
+
+    /* ── getBookings ── */
+    if (action === 'getBookings') {
       const { data, error } = await supabase
         .from('bookings')
         .select('*')
         .eq('user_id', user.id)
-        .order('service_date', { ascending: true });
+        .order('scheduled_at', { ascending: true });
       if (error) throw error;
-      return { statusCode: 200, headers: CORS, body: JSON.stringify(data) };
+      return ok(data);
     }
 
-    if (event.httpMethod === 'POST') {
-      const body = JSON.parse(event.body || '{}');
+    /* ── createBooking ── */
+    if (action === 'createBooking') {
+      const { service_type, scheduled_at, notes } = body;
+      if (!service_type || !scheduled_at) return err('Missing service_type or scheduled_at');
       const { data, error } = await supabase
         .from('bookings')
-        .insert({ ...body, user_id: user.id })
+        .insert({ user_id: user.id, service_type, scheduled_at, notes: notes || null, status: 'pending' })
         .select()
         .single();
       if (error) throw error;
-      return { statusCode: 201, headers: CORS, body: JSON.stringify(data) };
+      return ok(data, 201);
     }
 
-    if (event.httpMethod === 'DELETE') {
-      const id = event.queryStringParameters?.id;
-      if (!id) {
-        return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing id parameter' }) };
-      }
-      const { error } = await supabase
-        .from('bookings')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
+    /* ── getProfile ── */
+    if (action === 'getProfile') {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      return ok({ profile: profile || null, user: { email: user.email, created_at: user.created_at } });
+    }
+
+    /* ── upsertProfile ── */
+    if (action === 'upsertProfile') {
+      const { full_name, phone } = body;
+      const { data, error } = await supabase
+        .from('profiles')
+        .upsert({ id: user.id, full_name, phone, updated_at: new Date().toISOString() })
+        .select()
+        .single();
       if (error) throw error;
-      return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true }) };
+      return ok(data);
     }
 
-    return { statusCode: 405, headers: CORS, body: JSON.stringify({ error: 'Method not allowed' }) };
-  } catch (err) {
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: err.message }) };
+    return err('Unknown action', 400);
+  } catch (e) {
+    return err(e.message, 500);
   }
 };

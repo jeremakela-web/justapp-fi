@@ -5,19 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Just.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    /* ── CSS vars (app) ── */
+    :root{--ink:#0a1a0e;--g1:#2d6645;--g2:#3d8a5c;--g4:#7ecf96;--g5:#b8eacc;--g6:#e4f7ec;--off:#f6fcf8;--sub:#4a6852}
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #eef2ee;
-      color: #1a1a1a;
+      font-family: 'Instrument Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--off);
+      color: var(--ink);
       min-height: 100vh;
     }
 
-    /* ── HEADER ── */
+    /* ══════════════════════════════
+       AUTH VIEW
+    ══════════════════════════════ */
+    #auth-view { background: #eef2ee; min-height: 100vh; }
+
     .site-header {
       background: #1a1a1a;
       height: 56px;
@@ -32,6 +39,7 @@
       color: #fff;
       letter-spacing: -0.03em;
       text-decoration: none;
+      font-family: 'Syne', 'Inter', sans-serif;
     }
     .header-logo .dot { color: #52b788; }
     .back-link {
@@ -45,8 +53,6 @@
     }
     .back-link:hover { color: rgba(255,255,255,0.9); }
 
-    /* ── AUTH BODY ── */
-    #auth-view { display: block; }
     .auth-body {
       min-height: calc(100vh - 56px);
       display: flex;
@@ -55,7 +61,6 @@
       padding: 32px 16px;
     }
 
-    /* ── CARD ── */
     .auth-card {
       background: #fff;
       border-radius: 22px;
@@ -66,7 +71,6 @@
     }
     @media (max-width: 440px) { .auth-card { padding: 32px 20px 28px; } }
 
-    /* logo inside card */
     .card-logo {
       text-align: center;
       font-size: 2.4rem;
@@ -75,6 +79,7 @@
       letter-spacing: -0.04em;
       line-height: 1;
       margin-bottom: 8px;
+      font-family: 'Syne', sans-serif;
     }
     .card-logo .dot { color: #2d6a4f; }
 
@@ -86,7 +91,6 @@
       margin-bottom: 28px;
     }
 
-    /* ── SEGMENT TABS ── */
     .tabs {
       background: #f0f0f0;
       border-radius: 100px;
@@ -107,13 +111,9 @@
       cursor: pointer;
       transition: background 0.18s, color 0.18s;
     }
-    .tab-btn.active {
-      background: #2d6a4f;
-      color: #fff;
-    }
+    .tab-btn.active { background: #2d6a4f; color: #fff; }
     .tab-btn:hover:not(.active) { color: #374151; }
 
-    /* ── FORM ── */
     .form-group { margin-bottom: 18px; }
     label {
       display: block;
@@ -127,11 +127,7 @@
     input[type="text"],
     input[type="email"],
     input[type="password"],
-    input[type="tel"],
-    input[type="date"],
-    input[type="time"],
-    select,
-    textarea {
+    input[type="tel"] {
       width: 100%;
       padding: 13px 16px;
       border: 1.5px solid #e5e7eb;
@@ -143,13 +139,12 @@
       transition: border-color 0.15s, box-shadow 0.15s;
     }
     input::placeholder { color: #d1d5db; }
-    input:focus, select:focus, textarea:focus {
+    input:focus {
       outline: none;
       border-color: #2d6a4f;
       box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
     }
 
-    /* ── BUTTONS ── */
     .btn {
       width: 100%;
       padding: 14px;
@@ -168,21 +163,6 @@
     .btn-ghost  { background: none; color: #6b7280; border: 1.5px solid #e5e7eb; }
     .btn-ghost:hover { background: #f9fafb; }
 
-    .btn-logout {
-      background: transparent;
-      color: #dc2626;
-      border: 1.5px solid #dc2626;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s, color 0.15s;
-    }
-    .btn-logout:hover { background: #dc2626; color: #fff; }
-
-    /* ── MESSAGES ── */
     .msg {
       padding: 11px 14px;
       border-radius: 10px;
@@ -194,7 +174,6 @@
     .msg-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
     .msg-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
 
-    /* ── CHECK EMAIL ── */
     #check-email-view { display: none; text-align: center; padding: 8px 0 4px; }
     .check-email-icon {
       width: 60px; height: 60px;
@@ -208,40 +187,91 @@
     #check-email-view p   { font-size: 0.9rem; color: #6b7280; line-height: 1.6; margin-bottom: 6px; }
     #check-email-view strong { color: #374151; }
 
-    /* ── APP VIEW ── */
-    #app-view { display: none; }
-    .app-header {
-      background: #1a1a1a;
-      height: 56px; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 10;
-    }
-    .app-logo { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
-    .app-logo .dot { color: #52b788; }
-    .app-user { font-size: 0.825rem; color: #9ca3af; }
-    .app-container { max-width: 720px; margin: 0 auto; padding: 32px 16px; }
-    .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; }
-    .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #111; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
-    .booking-item {
-      border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 10px;
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
-    }
-    .booking-item:last-child { margin-bottom: 0; }
-    .booking-date { font-weight: 600; color: #111; font-size: 0.95rem; }
-    .booking-meta { color: #6b7280; font-size: 0.875rem; margin-top: 3px; }
-    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
-    .badge-pending   { background: #fef9c3; color: #854d0e; }
-    .badge-confirmed { background: #f0fdf4; color: #166534; }
-    .badge-completed { background: #e0f2fe; color: #075985; }
-    .empty   { text-align: center; color: #9ca3af; padding: 36px 0; font-size: 0.9rem; }
-    .loading { text-align: center; color: #9ca3af; padding: 24px; }
+    /* ══════════════════════════════
+       APP SHELL (from justapp.html)
+    ══════════════════════════════ */
+    .app-hdr{background:var(--ink);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:50}
+    .app-logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.15rem;color:#fff}
+    .app-logo span{color:var(--g4)}
+    .app-right{display:flex;align-items:center;gap:10px}
+    .app-uname{color:rgba(255,255,255,0.7);font-size:0.78rem;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .app-logout{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:none;border-radius:6px;padding:5px 10px;font-size:0.72rem;cursor:pointer;font-family:inherit;transition:all 0.15s}
+    .app-logout:hover{background:rgba(255,255,255,0.16);color:#fff}
+    #app-main{flex:1;overflow-y:auto;padding:20px 16px 84px;max-width:540px;margin:0 auto;width:100%}
+    .tab-pane{display:none}
+    .tab-pane.on{display:block}
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:540px;background:#fff;border-top:1.5px solid rgba(45,102,69,0.1);z-index:50}
+    .bnav-btn{flex:1;padding:10px 0 12px;border:none;background:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--sub);font-size:0.63rem;font-weight:600;letter-spacing:0.02em;transition:color 0.15s}
+    .bnav-btn.on{color:var(--g1)}
+    .bnav-ic{font-size:1.25rem;line-height:1}
+    .sec-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:4px}
+    .sec-sub{color:var(--sub);font-size:0.8rem;margin-bottom:18px}
+    .welcome{color:var(--sub);font-size:0.88rem;margin-bottom:18px}
+    .welcome strong{color:var(--g1)}
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .cat-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px}
+    .cat-card:hover{border-color:rgba(45,102,69,0.3);background:var(--g6);transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,102,69,0.1)}
+    .cat-card:active{transform:translateY(0)}
+    .cat-img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--g5)}
+    .cat-info{min-width:0}
+    .cat-name{font-family:"Syne",sans-serif;font-weight:700;font-size:0.82rem;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cat-price{font-size:0.69rem;color:var(--g2);font-weight:600}
+    .cat-badge{font-size:0.56rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:rgba(45,102,69,0.08);color:var(--g1);padding:1px 6px;border-radius:4px;display:inline-block;margin-top:3px}
+    .bk-list{display:flex;flex-direction:column;gap:10px}
+    .bk-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:12px;padding:14px 16px}
+    .bk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .bk-svc{font-family:"Syne",sans-serif;font-weight:700;font-size:0.9rem;color:var(--ink)}
+    .bk-badge{font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:5px}
+    .s-pending{background:rgba(200,168,75,0.12);color:#8a6800}
+    .s-confirmed{background:rgba(45,102,69,0.1);color:var(--g1)}
+    .s-completed{background:rgba(45,102,69,0.18);color:var(--g1)}
+    .s-cancelled{background:rgba(220,0,0,0.08);color:#c00}
+    .bk-date{font-size:0.78rem;color:var(--sub);margin-bottom:3px}
+    .bk-notes{font-size:0.75rem;color:var(--sub);font-style:italic}
+    .pf-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:20px}
+    .pf-avatar{width:60px;height:60px;border-radius:50%;background:var(--g1);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:12px}
+    .pf-name{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:2px}
+    .pf-email{font-size:0.8rem;color:var(--sub);margin-bottom:14px}
+    .pf-divider{height:1px;background:rgba(45,102,69,0.08);margin:14px 0}
+    .pf-row{margin-bottom:12px}
+    .pf-row label{display:block;font-size:0.69rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--sub);margin-bottom:4px}
+    .pf-row input{width:100%;padding:9px 12px;border:1.5px solid rgba(45,102,69,0.13);border-radius:8px;font-size:0.88rem;font-family:inherit;color:var(--ink);background:var(--off);outline:none;transition:border-color 0.15s}
+    .pf-row input:focus{border-color:var(--g1);background:#fff}
+    .pf-row input:disabled{opacity:0.55;cursor:not-allowed}
+    .save-ok{font-size:0.8rem;color:var(--g1);margin-top:6px;display:none}
+    .empty{text-align:center;padding:44px 20px}
+    .empty-ic{font-size:2.5rem;margin-bottom:12px}
+    .empty-t{font-family:"Syne",sans-serif;font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:6px}
+    .empty-s{color:var(--sub);font-size:0.82rem;margin-bottom:20px}
+    .spin-wrap{display:flex;align-items:center;justify-content:center;padding:44px}
+    .spin{display:inline-block;width:22px;height:22px;border:2px solid rgba(45,102,69,0.18);border-top-color:var(--g1);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn-g{display:inline-block;background:var(--g1);color:#fff;padding:11px 24px;border-radius:50px;font-size:0.88rem;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:background 0.2s;text-decoration:none}
+    .btn-g:hover{background:var(--g2)}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
+    .modal-bg.open{display:flex}
+    .modal{background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto}
+    .modal-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:4px}
+    .modal-sub{font-size:0.82rem;color:var(--sub);margin-bottom:18px}
+    .mf{margin-bottom:14px}
+    .mf label{display:block;font-size:0.72rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--sub);margin-bottom:5px}
+    .mf input,.mf textarea{width:100%;padding:10px 13px;border:1.5px solid rgba(45,102,69,0.15);border-radius:9px;font-size:0.9rem;font-family:inherit;color:var(--ink);background:var(--off);outline:none;transition:border-color 0.15s}
+    .mf input:focus,.mf textarea:focus{border-color:var(--g1);background:#fff}
+    .mf textarea{min-height:70px;resize:vertical}
+    .modal-btns{display:flex;gap:10px;margin-top:6px}
+    .btn-cancel{flex:1;padding:12px;background:var(--off);color:var(--sub);border:1.5px solid rgba(45,102,69,0.15);border-radius:50px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit}
+    .btn-confirm{flex:2;padding:12px;background:var(--g1);color:#fff;border:none;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s}
+    .btn-confirm:hover{background:var(--g2)}
+    .btn-confirm:disabled{opacity:0.6;cursor:default}
+    .modal-err{color:#dc2626;font-size:0.8rem;margin-bottom:8px;display:none}
+    .modal-ok{color:var(--g1);font-size:0.82rem;background:var(--g6);border:1px solid var(--g5);border-radius:7px;padding:8px 12px;margin-bottom:8px;display:none}
   </style>
 </head>
 <body>
 
-<!-- AUTH VIEW -->
+<!-- ══════════════════════════════
+     AUTH VIEW
+══════════════════════════════ -->
 <div id="auth-view">
   <header class="site-header">
     <a href="https://getjust.fi" class="header-logo">Just<span class="dot">.</span></a>
@@ -255,17 +285,14 @@
     <div class="auth-card">
 
       <div id="auth-main">
-        <!-- Logo inside card -->
         <div class="card-logo">Just<span class="dot">.</span></div>
         <p class="card-subtitle" data-i18n="heading">Kirjaudu tai luo asiakastili</p>
 
-        <!-- Segment control -->
         <div class="tabs">
           <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')" data-i18n="tabLogin">Kirjaudu</button>
           <button class="tab-btn"        id="tab-signup-btn" onclick="switchTab('signup')" data-i18n="tabSignup">Luo tili</button>
         </div>
 
-        <!-- Login -->
         <div id="tab-login">
           <div class="msg msg-error" id="login-error"></div>
           <div class="form-group">
@@ -279,7 +306,6 @@
           <button class="btn btn-green" onclick="handleLogin()" data-i18n="loginBtn">Kirjaudu sis&auml;&auml;n</button>
         </div>
 
-        <!-- Signup -->
         <div id="tab-signup" style="display:none">
           <div class="msg msg-error" id="signup-error"></div>
           <div class="form-group">
@@ -302,7 +328,6 @@
         </div>
       </div>
 
-      <!-- Check-email state -->
       <div id="check-email-view">
         <div class="check-email-icon">&#9993;</div>
         <h2 data-i18n="checkHeading">Tarkista s&auml;hk&ouml;postisi</h2>
@@ -315,108 +340,147 @@
   </div>
 </div>
 
-<!-- APP VIEW -->
-<div id="app-view">
-  <header class="app-header">
-    <span class="app-logo">Just<span class="dot">.</span></span>
-    <div style="display:flex;align-items:center;gap:14px">
-      <span class="app-user" id="user-email-display"></span>
-      <button class="btn-logout" onclick="handleLogout()">Kirjaudu ulos</button>
+<!-- ══════════════════════════════
+     APP SHELL (justapp.html)
+══════════════════════════════ -->
+<header class="app-hdr" id="app-hdr" style="display:none">
+  <div class="app-logo">Just<span>.</span></div>
+  <div class="app-right">
+    <span class="app-uname" id="uname"></span>
+    <button class="app-logout" onclick="doLogout()">Kirjaudu ulos</button>
+  </div>
+</header>
+
+<main id="app-main" style="display:none">
+  <!-- SERVICES TAB -->
+  <div class="tab-pane on" id="pane-services">
+    <p class="welcome" id="welcome-msg">Hei! 👋</p>
+    <div class="sec-title">Valitse palvelu</div>
+    <p class="sec-sub">Kaikki tekijät laadunvarmistettuja</p>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="openBooking('Autopesu')">
+        <img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Autopesu" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Autopesu</div><div class="cat-price">alkaen 25 €</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Renkaanvaihto')">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Renkaanvaihto" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Renkaanvaihto</div><div class="cat-price">alkaen 50 €</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Kodinsiivous')">
+        <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Kodinsiivous" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Kodinsiivous</div><div class="cat-price">alkaen 60 €</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Muutto')">
+        <img src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Muutto" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Muutto</div><div class="cat-price">alkaen 80 €/h</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Kodinkorjaus')">
+        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Kodinkorjaus" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Kodinkorjaus</div><div class="cat-price">alkaen 45 €/h</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Puutarhatyöt')">
+        <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Puutarhatyöt" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Puutarhatyöt</div><div class="cat-price">alkaen 35 €/h</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Lumenluonti')">
+        <img src="https://images.unsplash.com/photo-1548777123-e216912df7d8?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Lumenluonti" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Lumenluonti</div><div class="cat-price">alkaen 40 €</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
+      <div class="cat-card" onclick="openBooking('Ikkunanpesu')">
+        <img src="https://images.unsplash.com/photo-1527515637462-cff94ebe84ea?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
+        <div class="cat-info"><div class="cat-name">Ikkunanpesu</div><div class="cat-price">alkaen 30 €</div><span class="cat-badge">Saatavilla</span></div>
+      </div>
     </div>
-  </header>
-  <div class="app-container">
-    <div class="card">
-      <h2>Varaa siivous</h2>
-      <div class="msg msg-error"   id="booking-error"></div>
-      <div class="msg msg-success" id="booking-success"></div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="booking-date">P&auml;iv&auml;m&auml;&auml;r&auml;</label>
-          <input type="date" id="booking-date" />
-        </div>
-        <div class="form-group">
-          <label for="booking-time">Kellonaika</label>
-          <input type="time" id="booking-time" value="09:00" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="booking-service">Palvelu</label>
-        <select id="booking-service">
-          <option value="kotisiivous">Kotisiivous</option>
-          <option value="perussiivous">Perussiivous</option>
-          <option value="syvassiivous">Syv&auml;ssiivous</option>
-          <option value="ikkunanpesu">Ikkunanpesu</option>
-          <option value="muuttosiivous">Muuttosiivous</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="booking-address">Osoite</label>
-        <input type="text" id="booking-address" placeholder="Kadunnimi 1, Helsinki" />
-      </div>
-      <div class="form-group">
-        <label for="booking-notes">Lis&auml;tiedot (valinnainen)</label>
-        <textarea id="booking-notes" rows="3" placeholder="Esim. pinta-ala, erityistoiveet..."></textarea>
-      </div>
-      <button class="btn btn-green" onclick="handleBooking()">Varaa aika</button>
+  </div>
+
+  <!-- BOOKINGS TAB -->
+  <div class="tab-pane" id="pane-bookings">
+    <div class="sec-title">Varaukseni</div>
+    <p class="sec-sub">Kaikki varauksesi yhdessä paikassa</p>
+    <div id="bookings-out"><div class="spin-wrap"><div class="spin"></div></div></div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="tab-pane" id="pane-profile">
+    <div class="sec-title">Profiili</div>
+    <p class="sec-sub">Hallinnoi tietojasi</p>
+    <div id="profile-out"><div class="spin-wrap"><div class="spin"></div></div></div>
+  </div>
+</main>
+
+<nav class="bottom-nav" id="app-nav" style="display:none">
+  <button class="bnav-btn on" id="nav-services" onclick="showTab('services')">
+    <span class="bnav-ic">🔍</span>Palvelut
+  </button>
+  <button class="bnav-btn" id="nav-bookings" onclick="showTab('bookings')">
+    <span class="bnav-ic">📋</span>Varaukseni
+  </button>
+  <button class="bnav-btn" id="nav-profile" onclick="showTab('profile')">
+    <span class="bnav-ic">👤</span>Profiili
+  </button>
+</nav>
+
+<!-- BOOKING MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Varaa palvelu</div>
+    <p class="modal-sub">Valitse aika ja anna lisätiedot</p>
+    <div class="modal-err" id="modal-err"></div>
+    <div class="modal-ok"  id="modal-ok"></div>
+    <div class="mf">
+      <label>Toivottu päivä ja aika</label>
+      <input type="datetime-local" id="modal-dt">
     </div>
-    <div class="card">
-      <h2>Varauksesi</h2>
-      <div id="bookings-list"><div class="loading">Ladataan...</div></div>
+    <div class="mf">
+      <label>Lisätiedot (vapaaehtoinen)</label>
+      <textarea id="modal-notes" placeholder="Esim. osoite, toiveet, tarkemmat tiedot…"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel"  onclick="closeModal()">Peruuta</button>
+      <button class="btn-confirm" id="modal-confirm" onclick="confirmBooking()">Vahvista varaus →</button>
     </div>
   </div>
 </div>
 
 <script>
-  const SUPABASE_URL      = 'https://mebuynheutnegvvofnrl.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lYnV5bmhldXRuZWd2dm9mbnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDA3OTEsImV4cCI6MjA5MjQxNjc5MX0.IguEIQsVF1ZsTC9sjn0dZU3_Z0-o5UqJuBv7KKCwwAE';
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  /* ── SUPABASE ── */
+  const SUPA_URL  = 'https://mebuynheutnegvvofnrl.supabase.co';
+  const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lYnV5bmhldXRuZWd2dm9mbnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDA3OTEsImV4cCI6MjA5MjQxNjc5MX0.IguEIQsVF1ZsTC9sjn0dZU3_Z0-o5UqJuBv7KKCwwAE';
+  const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON);
 
   /* ── i18n ── */
   const T = {
     fi: {
-      backLink:            'Etusivulle',
-      heading:             'Kirjaudu tai luo asiakastili',
-      tabLogin:            'Kirjaudu',
-      tabSignup:           'Luo tili',
-      emailLabel:          'Sähköposti',
-      emailPlaceholder:    'oma@email.fi',
-      passwordLabel:       'Salasana',
-      nameLabel:           'Koko nimi',
-      namePlaceholder:     'Matti Meikäläinen',
-      phoneLabel:          'Puhelinnumero',
-      newPasswordPlaceholder: 'Vähintään 8 merkkiä',
-      loginBtn:            'Kirjaudu sisään',
-      signupBtn:           'Luo tili',
-      checkHeading:        'Tarkista sähköpostisi',
-      checkText:           'Lähetimme vahvistuslinkin osoitteeseen',
-      checkSubtext:        'Klikkaa linkkiä kirjautuaksesi sisään automaattisesti.',
-      backBtn:             'Takaisin kirjautumiseen',
-      errEmpty:            'Täytä kaikki kentät.',
-      errEmptySignup:      'Täytä kaikki pakolliset kentät.',
-      errPasswordShort:    'Salasanan on oltava vähintään 8 merkkiä.',
+      backLink:'Etusivulle', heading:'Kirjaudu tai luo asiakastili',
+      tabLogin:'Kirjaudu', tabSignup:'Luo tili',
+      emailLabel:'Sähköposti', emailPlaceholder:'oma@email.fi',
+      passwordLabel:'Salasana', nameLabel:'Koko nimi',
+      namePlaceholder:'Matti Meikäläinen', phoneLabel:'Puhelinnumero',
+      newPasswordPlaceholder:'Vähintään 8 merkkiä',
+      loginBtn:'Kirjaudu sisään', signupBtn:'Luo tili',
+      checkHeading:'Tarkista sähköpostisi',
+      checkText:'Lähetimme vahvistuslinkin osoitteeseen',
+      checkSubtext:'Klikkaa linkkiä kirjautuaksesi sisään automaattisesti.',
+      backBtn:'Takaisin kirjautumiseen',
+      errEmpty:'Täytä kaikki kentät.',
+      errEmptySignup:'Täytä kaikki pakolliset kentät.',
+      errPasswordShort:'Salasanan on oltava vähintään 8 merkkiä.',
     },
     en: {
-      backLink:            'Back to home',
-      heading:             'Sign in or create an account',
-      tabLogin:            'Sign in',
-      tabSignup:           'Create account',
-      emailLabel:          'Email',
-      emailPlaceholder:    'you@example.com',
-      passwordLabel:       'Password',
-      nameLabel:           'Full name',
-      namePlaceholder:     'John Smith',
-      phoneLabel:          'Phone number',
-      newPasswordPlaceholder: 'At least 8 characters',
-      loginBtn:            'Sign in',
-      signupBtn:           'Create account',
-      checkHeading:        'Check your email',
-      checkText:           'We sent a confirmation link to',
-      checkSubtext:        'Click the link to sign in automatically.',
-      backBtn:             'Back to sign in',
-      errEmpty:            'Please fill in all fields.',
-      errEmptySignup:      'Please fill in all required fields.',
-      errPasswordShort:    'Password must be at least 8 characters.',
+      backLink:'Back to home', heading:'Sign in or create an account',
+      tabLogin:'Sign in', tabSignup:'Create account',
+      emailLabel:'Email', emailPlaceholder:'you@example.com',
+      passwordLabel:'Password', nameLabel:'Full name',
+      namePlaceholder:'John Smith', phoneLabel:'Phone number',
+      newPasswordPlaceholder:'At least 8 characters',
+      loginBtn:'Sign in', signupBtn:'Create account',
+      checkHeading:'Check your email',
+      checkText:'We sent a confirmation link to',
+      checkSubtext:'Click the link to sign in automatically.',
+      backBtn:'Back to sign in',
+      errEmpty:'Please fill in all fields.',
+      errEmptySignup:'Please fill in all required fields.',
+      errPasswordShort:'Password must be at least 8 characters.',
     },
   };
 
@@ -424,10 +488,7 @@
 
   function detectLang() {
     const urlParam = new URLSearchParams(window.location.search).get('lang');
-    if (urlParam === 'fi' || urlParam === 'en') {
-      localStorage.setItem('lang', urlParam);
-      return urlParam;
-    }
+    if (urlParam === 'fi' || urlParam === 'en') { localStorage.setItem('lang', urlParam); return urlParam; }
     const stored = localStorage.getItem('lang');
     if (stored === 'fi' || stored === 'en') return stored;
     return (navigator.language || 'fi').toLowerCase().startsWith('en') ? 'en' : 'fi';
@@ -437,41 +498,53 @@
     const t = T[lang];
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const v = t[el.getAttribute('data-i18n')];
-      if (v !== undefined) el.textContent = v;
+      const v = t[el.getAttribute('data-i18n')]; if (v !== undefined) el.textContent = v;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-      const v = t[el.getAttribute('data-i18n-placeholder')];
-      if (v !== undefined) el.placeholder = v;
+      const v = t[el.getAttribute('data-i18n-placeholder')]; if (v !== undefined) el.placeholder = v;
     });
   }
 
   function t(key) { return T[lang][key] || key; }
 
-  /* ── AUTH STATE ── */
-  let currentUser = null;
+  /* ── VIEW SWITCHING ── */
+  let session = null;
+  let bkLoaded = false;
+  let pfLoaded = false;
 
-  sb.auth.onAuthStateChange((_event, session) => {
-    currentUser = session?.user ?? null;
-    if (currentUser) showApp();
-    else showAuth();
+  function showAuthView() {
+    document.getElementById('auth-view').style.display = 'block';
+    document.getElementById('app-hdr').style.display   = 'none';
+    document.getElementById('app-main').style.display  = 'none';
+    document.getElementById('app-nav').style.display   = 'none';
+  }
+
+  function showAppView(s) {
+    session = s;
+    bkLoaded = false;
+    pfLoaded = false;
+    document.getElementById('auth-view').style.display = 'none';
+    document.getElementById('app-hdr').style.display   = 'flex';
+    document.getElementById('app-main').style.display  = 'block';
+    document.getElementById('app-nav').style.display   = 'flex';
+    const name  = s.user?.user_metadata?.full_name || s.user?.email || '';
+    const first = name.split(' ')[0] || 'siellä';
+    document.getElementById('uname').textContent = name;
+    document.getElementById('welcome-msg').innerHTML = `Hei, <strong>${first}</strong>! 👋`;
+    // reset datetime-local min
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('modal-dt').min = now.toISOString().slice(0,16);
+    showTab('services');
+  }
+
+  /* ── AUTH LISTENER ── */
+  sb.auth.onAuthStateChange((_evt, ns) => {
+    if (ns) showAppView(ns);
+    else showAuthView();
   });
 
-  function showAuth() {
-    document.getElementById('auth-view').style.display = 'block';
-    document.getElementById('app-view').style.display  = 'none';
-  }
-
-  function showApp() {
-    document.getElementById('auth-view').style.display = 'none';
-    document.getElementById('app-view').style.display  = 'block';
-    document.getElementById('user-email-display').textContent = currentUser.email;
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
-    loadBookings();
-  }
-
+  /* ── AUTH FORM HELPERS ── */
   function showAuthMain() {
     document.getElementById('auth-main').style.display        = 'block';
     document.getElementById('check-email-view').style.display = 'none';
@@ -522,65 +595,147 @@
     if (error) {
       console.error('signUp error', { message: error.message, status: error.status, details: error });
       flash('signup-error', error.message, 'error');
-    } else showCheckEmail(email);
+    } else {
+      showCheckEmail(email);
+    }
   }
 
-  async function handleLogout() { await sb.auth.signOut(); }
-
-  /* ── BOOKING ── */
-  async function getToken() {
-    const { data } = await sb.auth.getSession();
-    return data?.session?.access_token;
+  async function doLogout() {
+    await sb.auth.signOut();
   }
 
-  async function handleBooking() {
-    const date    = document.getElementById('booking-date').value;
-    const time    = document.getElementById('booking-time').value;
-    const service = document.getElementById('booking-service').value;
-    const address = document.getElementById('booking-address').value.trim();
-    const notes   = document.getElementById('booking-notes').value.trim();
-    if (!date || !address) return flash('booking-error', 'Päivämäärä ja osoite ovat pakollisia.', 'error');
-    const token = await getToken();
+  /* ── APP: API helper ── */
+  async function api(action, params = {}) {
+    const res = await fetch('/.netlify/functions/customer-api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action, ...params }),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  /* ── APP: Tab navigation ── */
+  function showTab(name) {
+    ['services', 'bookings', 'profile'].forEach(t => {
+      document.getElementById('pane-' + t).classList.toggle('on', t === name);
+      document.getElementById('nav-'  + t).classList.toggle('on', t === name);
+    });
+    if (name === 'bookings' && !bkLoaded) loadBookings();
+    if (name === 'profile'  && !pfLoaded) loadProfile();
+  }
+
+  /* ── APP: Booking modal ── */
+  let activeSvc = '';
+
+  function openBooking(svc) {
+    activeSvc = svc;
+    document.getElementById('modal-title').textContent   = 'Varaa: ' + svc;
+    document.getElementById('modal-dt').value            = '';
+    document.getElementById('modal-notes').value         = '';
+    document.getElementById('modal-err').style.display   = 'none';
+    document.getElementById('modal-ok').style.display    = 'none';
+    const btn = document.getElementById('modal-confirm');
+    btn.disabled = false; btn.textContent = 'Vahvista varaus →';
+    document.getElementById('modal-bg').classList.add('open');
+  }
+
+  function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+
+  async function confirmBooking() {
+    const dt    = document.getElementById('modal-dt').value;
+    const notes = document.getElementById('modal-notes').value.trim();
+    const errEl = document.getElementById('modal-err');
+    const okEl  = document.getElementById('modal-ok');
+    errEl.style.display = 'none'; okEl.style.display = 'none';
+    if (!dt) { errEl.textContent = 'Valitse ensin päivä ja aika.'; errEl.style.display = 'block'; return; }
+    const btn = document.getElementById('modal-confirm');
+    btn.disabled = true; btn.textContent = 'Lähetetään…';
     try {
-      const res = await fetch('/.netlify/functions/customer-api', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ service_date: date, service_time: time, service_type: service, address, notes }),
+      await api('createBooking', {
+        service_type: activeSvc,
+        scheduled_at: new Date(dt).toISOString(),
+        notes: notes || null,
       });
-      if (!res.ok) { const err = await res.json(); return flash('booking-error', err.error || 'Varaus epäonnistui.', 'error'); }
-      flash('booking-success', 'Varaus tehty onnistuneesti!', 'success');
-      document.getElementById('booking-address').value = '';
-      document.getElementById('booking-notes').value   = '';
-      loadBookings();
-    } catch { flash('booking-error', 'Verkkovirhe. Yritä uudelleen.', 'error'); }
+      okEl.textContent = 'Varaus lähetetty! Tekijä vahvistaa sen pian.';
+      okEl.style.display = 'block';
+      btn.textContent = 'Lähetetty ✓';
+      bkLoaded = false;
+      setTimeout(closeModal, 2200);
+    } catch(e) {
+      errEl.textContent = 'Virhe: ' + e.message; errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Vahvista varaus →';
+    }
   }
 
-  const SERVICE_LABELS = { kotisiivous: 'Kotisiivous', perussiivous: 'Perussiivous', syvassiivous: 'Syvässiivous', ikkunanpesu: 'Ikkunanpesu', muuttosiivous: 'Muuttosiivous' };
-  const STATUS_LABELS  = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
-  const STATUS_BADGES  = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
+  /* ── APP: Bookings tab ── */
+  const STATUS_LABEL = { pending:'Odottaa', confirmed:'Vahvistettu', completed:'Valmis', cancelled:'Peruutettu' };
+  const STATUS_CLS   = { pending:'s-pending', confirmed:'s-confirmed', completed:'s-completed', cancelled:'s-cancelled' };
+
+  function fmtDt(d) {
+    return d ? new Date(d).toLocaleString('fi-FI', { day:'numeric', month:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+  }
 
   async function loadBookings() {
-    const container = document.getElementById('bookings-list');
-    container.innerHTML = '<div class="loading">Ladataan...</div>';
-    const token = await getToken();
+    const el = document.getElementById('bookings-out');
+    el.innerHTML = '<div class="spin-wrap"><div class="spin"></div></div>';
     try {
-      const res = await fetch('/.netlify/functions/customer-api', { headers: { 'Authorization': `Bearer ${token}` } });
-      if (!res.ok) throw new Error();
-      const bookings = await res.json();
-      if (!bookings.length) { container.innerHTML = '<div class="empty">Ei varauksia vielä.</div>'; return; }
-      container.innerHTML = bookings.map(b => {
-        const dateStr = new Date(b.service_date).toLocaleDateString('fi-FI', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const status  = b.status || 'pending';
-        return `<div class="booking-item">
-          <div>
-            <div class="booking-date">${dateStr}${b.service_time ? ' klo ' + b.service_time : ''}</div>
-            <div class="booking-meta">${SERVICE_LABELS[b.service_type] || b.service_type} — ${b.address}</div>
-            ${b.notes ? `<div class="booking-meta">${b.notes}</div>` : ''}
+      const data = await api('getBookings');
+      bkLoaded = true;
+      if (!data.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-ic">📋</div><div class="empty-t">Ei varauksia vielä</div><p class="empty-s">Tee ensimmäinen varauksesi Palvelut-välilehdeltä.</p><button class="btn-g" onclick="showTab(\'services\')">Selaa palveluja →</button></div>';
+        return;
+      }
+      el.innerHTML = '<div class="bk-list">' + data.map(b => `
+        <div class="bk-card">
+          <div class="bk-head">
+            <span class="bk-svc">${b.service_type}</span>
+            <span class="bk-badge ${STATUS_CLS[b.status] || 's-pending'}">${STATUS_LABEL[b.status] || b.status}</span>
           </div>
-          <span class="badge ${STATUS_BADGES[status]}">${STATUS_LABELS[status] || status}</span>
+          ${b.scheduled_at ? `<div class="bk-date">📅 ${fmtDt(b.scheduled_at)}</div>` : ''}
+          ${b.notes ? `<div class="bk-notes">"${b.notes}"</div>` : ''}
+        </div>`).join('') + '</div>';
+    } catch(e) {
+      el.innerHTML = `<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">Lataus epäonnistui</div><p class="empty-s">${e.message}</p></div>`;
+    }
+  }
+
+  /* ── APP: Profile tab ── */
+  async function loadProfile() {
+    const el = document.getElementById('profile-out');
+    el.innerHTML = '<div class="spin-wrap"><div class="spin"></div></div>';
+    try {
+      const { profile: p, user: u } = await api('getProfile');
+      pfLoaded = true;
+      const initials = ((p && p.full_name) || u.email || '?').charAt(0).toUpperCase();
+      el.innerHTML = `
+        <div class="pf-card">
+          <div class="pf-avatar">${initials}</div>
+          <div class="pf-name">${(p && p.full_name) || '—'}</div>
+          <div class="pf-email">${u.email || ''}</div>
+          <div class="pf-divider"></div>
+          <div class="pf-row"><label>Koko nimi</label><input type="text" id="pf-name" value="${(p && p.full_name) || ''}" placeholder="Koko nimi"></div>
+          <div class="pf-row"><label>Puhelinnumero</label><input type="tel" id="pf-phone" value="${(p && p.phone) || ''}" placeholder="+358 40 123 4567"></div>
+          <div class="pf-row"><label>Sähköposti</label><input type="email" value="${u.email || ''}" disabled></div>
+          <div class="pf-row"><label>Jäsen alkaen</label><input type="text" value="${new Date(u.created_at || Date.now()).toLocaleDateString('fi-FI')}" disabled></div>
+          <button class="btn-g" style="width:100%;margin-top:4px" onclick="saveProfile()">Tallenna muutokset</button>
+          <div class="save-ok" id="save-ok">Tallennettu! ✓</div>
         </div>`;
-      }).join('');
-    } catch { container.innerHTML = '<div class="empty">Varausten lataus epäonnistui.</div>'; }
+    } catch(e) {
+      el.innerHTML = `<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">Lataus epäonnistui</div><p class="empty-s">${e.message}</p></div>`;
+    }
+  }
+
+  async function saveProfile() {
+    const name  = (document.getElementById('pf-name')  || {}).value || '';
+    const phone = (document.getElementById('pf-phone') || {}).value || '';
+    try {
+      await api('upsertProfile', { full_name: name.trim(), phone: phone.trim() });
+      const msg = document.getElementById('save-ok');
+      if (msg) { msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 2500); }
+      document.getElementById('uname').textContent = name.trim() || session.user?.email || '';
+      pfLoaded = false;
+    } catch(e) { alert('Virhe tallennuksessa: ' + e.message); }
   }
 
   /* ── INIT ── */
