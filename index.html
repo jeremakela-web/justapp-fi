@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{overflow-x:hidden;max-width:100%}
 
     /* ── CSS vars (app) ── */
     :root{--ink:#0a1a0e;--g1:#2d6645;--g2:#3d8a5c;--g4:#7ecf96;--g5:#b8eacc;--g6:#e4f7ec;--off:#f6fcf8;--sub:#4a6852}
@@ -197,23 +198,24 @@
     .app-uname{color:rgba(255,255,255,0.7);font-size:0.78rem;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .app-logout{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:none;border-radius:6px;padding:5px 10px;font-size:0.72rem;cursor:pointer;font-family:inherit;transition:all 0.15s}
     .app-logout:hover{background:rgba(255,255,255,0.16);color:#fff}
-    #app-main{flex:1;overflow-y:auto;padding:20px 16px 84px;max-width:540px;margin:0 auto;width:100%}
+    #app-main{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 12px 84px;max-width:540px;margin:0 auto;width:100%}
     .tab-pane{display:none}
     .tab-pane.on{display:block}
     .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:540px;background:#fff;border-top:1.5px solid rgba(45,102,69,0.1);z-index:50}
-    .bnav-btn{flex:1;padding:10px 0 12px;border:none;background:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--sub);font-size:0.63rem;font-weight:600;letter-spacing:0.02em;transition:color 0.15s}
+    .bnav-btn{flex:1;padding:10px 0 14px;border:none;background:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--sub);font-size:0.7rem;font-weight:600;letter-spacing:0.02em;transition:color 0.15s}
     .bnav-btn.on{color:var(--g1)}
-    .bnav-ic{font-size:1.25rem;line-height:1}
+    .bnav-ic{font-size:1.5rem;line-height:1}
     .sec-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:4px}
     .sec-sub{color:var(--sub);font-size:0.8rem;margin-bottom:18px}
     .welcome{color:var(--sub);font-size:0.88rem;margin-bottom:18px}
     .welcome strong{color:var(--g1)}
-    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .cat-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px}
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .cat-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:10px 10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;min-width:0}
     .cat-card:hover{border-color:rgba(45,102,69,0.3);background:var(--g6);transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,102,69,0.1)}
     .cat-card:active{transform:translateY(0)}
-    .cat-img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--g5)}
-    .cat-info{min-width:0}
+    .cat-img{width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--g5)}
+    .cat-info{min-width:0;flex:1}
+    @media (max-width:360px){.cat-img{width:44px;height:44px}.cat-card{gap:6px;padding:8px 8px}}
     .cat-name{font-family:"Syne",sans-serif;font-weight:700;font-size:0.82rem;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .cat-price{font-size:0.69rem;color:var(--g2);font-weight:600}
     .cat-badge{font-size:0.56rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:rgba(45,102,69,0.08);color:var(--g1);padding:1px 6px;border-radius:4px;display:inline-block;margin-top:3px}
@@ -387,7 +389,7 @@
         <div class="cat-info"><div class="cat-name">Lumenluonti</div><div class="cat-price">alkaen 40 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
       <div class="cat-card" onclick="openBooking('Ikkunanpesu')">
-        <img src="https://images.unsplash.com/photo-1527515637462-cff94ebe84ea?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
+        <img src="https://images.unsplash.com/photo-1521219189973-b3fd4d45ee35?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Ikkunanpesu</div><div class="cat-price">alkaen 30 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
     </div>
