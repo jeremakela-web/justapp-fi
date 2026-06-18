@@ -519,8 +519,10 @@
       email, password,
       options: { emailRedirectTo: 'https://justapp.fi', data: { full_name: name, phone } },
     });
-    if (error) flash('signup-error', error.message, 'error');
-    else showCheckEmail(email);
+    if (error) {
+      console.error('signUp error', { message: error.message, status: error.status, details: error });
+      flash('signup-error', error.message, 'error');
+    } else showCheckEmail(email);
   }
 
   async function handleLogout() { await sb.auth.signOut(); }
