@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Just. – Kirjaudu</title>
+  <title>Just.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,7 +17,7 @@
       min-height: 100vh;
     }
 
-    /* ── SHARED HEADER ── */
+    /* ── HEADER ── */
     .site-header {
       background: #1a1a1a;
       padding: 0 24px;
@@ -26,6 +26,7 @@
       align-items: center;
       justify-content: space-between;
     }
+    .header-left { display: flex; align-items: center; gap: 20px; }
     .logo {
       font-size: 1.35rem;
       font-weight: 700;
@@ -36,7 +37,7 @@
     .logo .dot { color: #52b788; }
     .back-link {
       font-size: 0.875rem;
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -44,6 +45,29 @@
       transition: color 0.15s;
     }
     .back-link:hover { color: #fff; }
+
+    /* language switcher */
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+      transition: color 0.15s, background 0.15s;
+    }
+    .lang-btn:hover { color: #fff; }
+    .lang-btn.active { color: #52b788; }
+    .lang-sep { color: rgba(255,255,255,0.2); font-size: 0.75rem; }
 
     /* ── AUTH VIEW ── */
     #auth-view { display: block; }
@@ -53,8 +77,8 @@
       background: #f8faf8;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 48px 16px 64px;
+      align-items: center;
+      padding: 24px 16px;
     }
 
     .auth-card {
@@ -63,11 +87,10 @@
       padding: 36px 40px;
       width: 100%;
       max-width: 440px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+      border: 1px solid #ddeae3;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.11), 0 1px 4px rgba(0,0,0,0.06);
     }
-    @media (max-width: 480px) {
-      .auth-card { padding: 28px 20px; }
-    }
+    @media (max-width: 480px) { .auth-card { padding: 28px 20px; } }
 
     .auth-heading {
       font-size: 1.3rem;
@@ -96,15 +119,11 @@
       margin-bottom: -2px;
       transition: color 0.15s, border-color 0.15s;
     }
-    .tab-btn.active {
-      color: #2d6a4f;
-      border-bottom-color: #2d6a4f;
-    }
+    .tab-btn.active { color: #1b4332; border-bottom-color: #1b4332; }
     .tab-btn:hover:not(.active) { color: #374151; }
 
-    /* ── FORM ELEMENTS ── */
+    /* ── FORM ── */
     .form-group { margin-bottom: 16px; }
-
     label {
       display: block;
       font-size: 0.875rem;
@@ -112,7 +131,6 @@
       color: #374151;
       margin-bottom: 6px;
     }
-
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -150,14 +168,8 @@
       transition: background 0.15s, transform 0.1s;
     }
     .btn:active { transform: scale(0.98); }
-
-    .btn-green {
-      background: #2d6a4f;
-      color: #fff;
-      margin-top: 8px;
-    }
+    .btn-green { background: #2d6a4f; color: #fff; margin-top: 8px; }
     .btn-green:hover { background: #245c44; }
-
     .btn-ghost {
       background: none;
       color: #6b7280;
@@ -165,7 +177,6 @@
       margin-top: 10px;
     }
     .btn-ghost:hover { background: #f3f4f6; color: #374151; }
-
     .btn-logout {
       background: transparent;
       color: #dc2626;
@@ -192,183 +203,136 @@
     .msg-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
     .msg-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
 
-    /* ── CHECK EMAIL STATE ── */
-    #check-email-view {
-      display: none;
-      text-align: center;
-      padding: 8px 0 4px;
-    }
+    /* ── CHECK EMAIL ── */
+    #check-email-view { display: none; text-align: center; padding: 8px 0 4px; }
     .check-email-icon {
-      width: 56px;
-      height: 56px;
+      width: 56px; height: 56px;
       background: #f0fdf4;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       margin: 0 auto 20px;
       font-size: 1.5rem;
     }
-    #check-email-view h2 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 12px;
-    }
-    #check-email-view p {
-      font-size: 0.9rem;
-      color: #6b7280;
-      margin-bottom: 8px;
-      line-height: 1.6;
-    }
+    #check-email-view h2 { font-size: 1.15rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+    #check-email-view p  { font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; line-height: 1.6; }
     #check-email-view strong { color: #374151; }
 
     /* ── APP VIEW ── */
     #app-view { display: none; }
-
     .app-header {
       background: #1a1a1a;
-      height: 56px;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      height: 56px; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
     }
-    .app-logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
+    .app-logo { font-size: 1.25rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
     .app-logo .dot { color: #52b788; }
     .app-user { font-size: 0.825rem; color: #9ca3af; }
-
-    .app-container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 32px 16px;
-    }
-
+    .app-container { max-width: 720px; margin: 0 auto; padding: 32px 16px; }
     .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      margin-bottom: 24px;
+      background: #fff; border-radius: 12px; padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px;
     }
     .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #111; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
-
     .booking-item {
-      border: 1.5px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 16px;
+      margin-bottom: 10px; display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 12px;
     }
     .booking-item:last-child { margin-bottom: 0; }
     .booking-date { font-weight: 600; color: #111; font-size: 0.95rem; }
     .booking-meta { color: #6b7280; font-size: 0.875rem; margin-top: 3px; }
-
-    .badge {
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
     .badge-pending   { background: #fef9c3; color: #854d0e; }
     .badge-confirmed { background: #f0fdf4; color: #166534; }
     .badge-completed { background: #e0f2fe; color: #075985; }
-
     .empty   { text-align: center; color: #9ca3af; padding: 36px 0; font-size: 0.9rem; }
     .loading { text-align: center; color: #9ca3af; padding: 24px; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════ AUTH VIEW ═══ -->
+<!-- AUTH VIEW -->
 <div id="auth-view">
   <header class="site-header">
-    <a href="https://getjust.fi" class="logo">Just<span class="dot">.</span></a>
-    <a href="https://getjust.fi" class="back-link">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      Etusivulle
-    </a>
+    <div class="header-left">
+      <a href="https://getjust.fi" class="logo">Just<span class="dot">.</span></a>
+      <a href="https://getjust.fi" class="back-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <span data-i18n="backLink">Etusivulle</span>
+      </a>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn" id="lang-fi" onclick="setLang('fi')">FI</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
   </header>
 
   <div class="auth-body">
     <div class="auth-card">
 
-      <!-- Normal auth state -->
       <div id="auth-main">
-        <h1 class="auth-heading">Kirjaudu tai luo asiakastili</h1>
+        <h1 class="auth-heading" data-i18n="heading">Kirjaudu tai luo asiakastili</h1>
 
         <div class="tabs">
-          <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Kirjaudu</button>
-          <button class="tab-btn"         id="tab-signup-btn" onclick="switchTab('signup')">Luo tili</button>
+          <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')" data-i18n="tabLogin">Kirjaudu</button>
+          <button class="tab-btn"        id="tab-signup-btn" onclick="switchTab('signup')" data-i18n="tabSignup">Luo tili</button>
         </div>
 
-        <!-- Kirjaudu -->
+        <!-- Kirjaudu / Sign in -->
         <div id="tab-login">
           <div class="msg msg-error" id="login-error"></div>
           <div class="form-group">
-            <label for="login-email">Sähköposti</label>
-            <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
+            <label for="login-email" data-i18n="emailLabel">S&#228;hk&#246;posti</label>
+            <input type="email" id="login-email" data-i18n-placeholder="emailPlaceholder" placeholder="sin&#228;@esimerkki.fi" autocomplete="email" />
           </div>
           <div class="form-group">
-            <label for="login-password">Salasana</label>
-            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+            <label for="login-password" data-i18n="passwordLabel">Salasana</label>
+            <input type="password" id="login-password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" />
           </div>
-          <button class="btn btn-green" onclick="handleLogin()">Kirjaudu sisään</button>
+          <button class="btn btn-green" onclick="handleLogin()" data-i18n="loginBtn">Kirjaudu sis&#228;&#228;n</button>
         </div>
 
-        <!-- Luo tili -->
+        <!-- Luo tili / Create account -->
         <div id="tab-signup" style="display:none">
           <div class="msg msg-error" id="signup-error"></div>
           <div class="form-group">
-            <label for="signup-name">Koko nimi</label>
-            <input type="text" id="signup-name" placeholder="Matti Meikäläinen" autocomplete="name" />
+            <label for="signup-name" data-i18n="nameLabel">Koko nimi</label>
+            <input type="text" id="signup-name" data-i18n-placeholder="namePlaceholder" placeholder="Matti Meik&#228;l&#228;inen" autocomplete="name" />
           </div>
           <div class="form-group">
-            <label for="signup-email">Sähköposti</label>
-            <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
+            <label for="signup-email" data-i18n="emailLabel">S&#228;hk&#246;posti</label>
+            <input type="email" id="signup-email" data-i18n-placeholder="emailPlaceholder" placeholder="sin&#228;@esimerkki.fi" autocomplete="email" />
           </div>
           <div class="form-group">
-            <label for="signup-phone">Puhelinnumero</label>
+            <label for="signup-phone" data-i18n="phoneLabel">Puhelinnumero</label>
             <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" autocomplete="tel" />
           </div>
           <div class="form-group">
-            <label for="signup-password">Salasana</label>
-            <input type="password" id="signup-password" placeholder="Vähintään 8 merkkiä" autocomplete="new-password" />
+            <label for="signup-password" data-i18n="passwordLabel">Salasana</label>
+            <input type="password" id="signup-password" data-i18n-placeholder="newPasswordPlaceholder" placeholder="V&#228;hint&#228;&#228;n 8 merkki&#228;" autocomplete="new-password" />
           </div>
-          <button class="btn btn-green" onclick="handleSignup()">Luo tili</button>
+          <button class="btn btn-green" onclick="handleSignup()" data-i18n="signupBtn">Luo tili</button>
         </div>
       </div>
 
-      <!-- Check-email state (shown after successful signup) -->
+      <!-- Check-email state -->
       <div id="check-email-view">
         <div class="check-email-icon">&#9993;</div>
-        <h2>Tarkista sähköpostisi</h2>
-        <p>Lähetimme vahvistuslinkin osoitteeseen<br><strong id="confirm-email-display"></strong></p>
-        <p style="margin-top:8px">Klikkaa linkkia kirjautuaksesi sisään automaattisesti.</p>
-        <button class="btn btn-ghost" style="margin-top:24px" onclick="showAuthMain()">Takaisin kirjautumiseen</button>
+        <h2 data-i18n="checkHeading">Tarkista s&#228;hk&#246;postisi</h2>
+        <p><span data-i18n="checkText">L&#228;hetimme vahvistuslinkin osoitteeseen</span><br><strong id="confirm-email-display"></strong></p>
+        <p style="margin-top:8px" data-i18n="checkSubtext">Klikkaa linkki&#228; kirjautuaksesi sis&#228;&#228;n automaattisesti.</p>
+        <button class="btn btn-ghost" style="margin-top:24px" onclick="showAuthMain()" data-i18n="backBtn">Takaisin kirjautumiseen</button>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════ APP VIEW ═══ -->
+<!-- APP VIEW -->
 <div id="app-view">
   <header class="app-header">
     <span class="app-logo">Just<span class="dot">.</span></span>
@@ -377,17 +341,14 @@
       <button class="btn-logout" onclick="handleLogout()">Kirjaudu ulos</button>
     </div>
   </header>
-
   <div class="app-container">
-
     <div class="card">
       <h2>Varaa siivous</h2>
       <div class="msg msg-error"   id="booking-error"></div>
       <div class="msg msg-success" id="booking-success"></div>
-
       <div class="form-row">
         <div class="form-group">
-          <label for="booking-date">Päivämäärä</label>
+          <label for="booking-date">P&#228;iv&#228;m&#228;&#228;r&#228;</label>
           <input type="date" id="booking-date" />
         </div>
         <div class="form-group">
@@ -395,56 +356,127 @@
           <input type="time" id="booking-time" value="09:00" />
         </div>
       </div>
-
       <div class="form-group">
         <label for="booking-service">Palvelu</label>
         <select id="booking-service">
           <option value="kotisiivous">Kotisiivous</option>
           <option value="perussiivous">Perussiivous</option>
-          <option value="syvassiivous">Syvässiivous</option>
+          <option value="syvassiivous">Syv&#228;ssiivous</option>
           <option value="ikkunanpesu">Ikkunanpesu</option>
           <option value="muuttosiivous">Muuttosiivous</option>
         </select>
       </div>
-
       <div class="form-group">
         <label for="booking-address">Osoite</label>
         <input type="text" id="booking-address" placeholder="Kadunnimi 1, Helsinki" />
       </div>
-
       <div class="form-group">
-        <label for="booking-notes">Lisätiedot (valinnainen)</label>
+        <label for="booking-notes">Lis&#228;tiedot (valinnainen)</label>
         <textarea id="booking-notes" rows="3" placeholder="Esim. pinta-ala, erityistoiveet..."></textarea>
       </div>
-
       <button class="btn btn-green" onclick="handleBooking()">Varaa aika</button>
     </div>
-
     <div class="card">
       <h2>Varauksesi</h2>
       <div id="bookings-list"><div class="loading">Ladataan...</div></div>
     </div>
-
   </div>
 </div>
 
 <script>
   const SUPABASE_URL      = 'https://mebuynheutnegvvofnrl.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lYnV5bmhldXRuZWd2dm9mbnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDA3OTEsImV4cCI6MjA5MjQxNjc5MX0.IguEIQsVF1ZsTC9sjn0dZU3_Z0-';
-
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  /* ── i18n ── */
+  const T = {
+    fi: {
+      backLink:           'Etusivulle',
+      heading:            'Kirjaudu tai luo asiakastili',
+      tabLogin:           'Kirjaudu',
+      tabSignup:          'Luo tili',
+      emailLabel:         'Sähköposti',
+      emailPlaceholder:   'sinä@esimerkki.fi',
+      passwordLabel:      'Salasana',
+      nameLabel:          'Koko nimi',
+      namePlaceholder:    'Matti Meikäläinen',
+      phoneLabel:         'Puhelinnumero',
+      newPasswordPlaceholder: 'Vähintään 8 merkkiä',
+      loginBtn:           'Kirjaudu sisään',
+      signupBtn:          'Luo tili',
+      checkHeading:       'Tarkista sähköpostisi',
+      checkText:          'Lähetimme vahvistuslinkin osoitteeseen',
+      checkSubtext:       'Klikkaa linkkiä kirjautuaksesi sisään automaattisesti.',
+      backBtn:            'Takaisin kirjautumiseen',
+      errEmpty:           'Täytä kaikki kentät.',
+      errEmptySignup:     'Täytä kaikki pakolliset kentät.',
+      errPasswordShort:   'Salasanan on oltava vähintään 8 merkkiä.',
+    },
+    en: {
+      backLink:           'Back to home',
+      heading:            'Sign in or create an account',
+      tabLogin:           'Sign in',
+      tabSignup:          'Create account',
+      emailLabel:         'Email',
+      emailPlaceholder:   'you@example.com',
+      passwordLabel:      'Password',
+      nameLabel:          'Full name',
+      namePlaceholder:    'John Smith',
+      phoneLabel:         'Phone number',
+      newPasswordPlaceholder: 'At least 8 characters',
+      loginBtn:           'Sign in',
+      signupBtn:          'Create account',
+      checkHeading:       'Check your email',
+      checkText:          'We sent a confirmation link to',
+      checkSubtext:       'Click the link to sign in automatically.',
+      backBtn:            'Back to sign in',
+      errEmpty:           'Please fill in all fields.',
+      errEmptySignup:     'Please fill in all required fields.',
+      errPasswordShort:   'Password must be at least 8 characters.',
+    },
+  };
+
+  let lang = 'fi';
+
+  function detectLang() {
+    const stored = localStorage.getItem('lang');
+    if (stored === 'fi' || stored === 'en') return stored;
+    const browser = (navigator.language || 'fi').toLowerCase();
+    return browser.startsWith('en') ? 'en' : 'fi';
+  }
+
+  function applyTranslations() {
+    const t = T[lang];
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (t[key] !== undefined) el.placeholder = t[key];
+    });
+    document.getElementById('lang-fi').classList.toggle('active', lang === 'fi');
+    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  }
+
+  function setLang(l) {
+    lang = l;
+    localStorage.setItem('lang', l);
+    applyTranslations();
+  }
+
+  function t(key) { return T[lang][key] || key; }
+
+  /* ── AUTH STATE ── */
   let currentUser = null;
 
-  // Handles initial load (including after email confirmation redirect)
   sb.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user ?? null;
     if (currentUser) showApp();
     else showAuth();
   });
-
-  /* ── VIEW HELPERS ── */
 
   function showAuth() {
     document.getElementById('auth-view').style.display = 'block';
@@ -493,7 +525,7 @@
   async function handleLogin() {
     const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
-    if (!email || !password) return flash('login-error', 'Täytä kaikki kentät.', 'error');
+    if (!email || !password) return flash('login-error', t('errEmpty'), 'error');
     const { error } = await sb.auth.signInWithPassword({ email, password });
     if (error) flash('login-error', error.message, 'error');
   }
@@ -503,26 +535,20 @@
     const email    = document.getElementById('signup-email').value.trim();
     const phone    = document.getElementById('signup-phone').value.trim();
     const password = document.getElementById('signup-password').value;
-
-    if (!name || !email || !password) return flash('signup-error', 'Täytä kaikki pakolliset kentät.', 'error');
-    if (password.length < 8)          return flash('signup-error', 'Salasanan on oltava vähintään 8 merkkiä.', 'error');
-
+    if (!name || !email || !password) return flash('signup-error', t('errEmptySignup'), 'error');
+    if (password.length < 8)          return flash('signup-error', t('errPasswordShort'), 'error');
     const { error } = await sb.auth.signUp({
-      email,
-      password,
+      email, password,
       options: {
         emailRedirectTo: 'https://justapp.fi',
         data: { full_name: name, phone },
       },
     });
-
     if (error) flash('signup-error', error.message, 'error');
     else showCheckEmail(email);
   }
 
-  async function handleLogout() {
-    await sb.auth.signOut();
-  }
+  async function handleLogout() { await sb.auth.signOut(); }
 
   /* ── BOOKING HANDLERS ── */
 
@@ -537,9 +563,7 @@
     const service = document.getElementById('booking-service').value;
     const address = document.getElementById('booking-address').value.trim();
     const notes   = document.getElementById('booking-notes').value.trim();
-
     if (!date || !address) return flash('booking-error', 'Päivämäärä ja osoite ovat pakollisia.', 'error');
-
     const token = await getToken();
     try {
       const res = await fetch('/.netlify/functions/customer-api', {
@@ -561,11 +585,8 @@
   }
 
   const SERVICE_LABELS = {
-    kotisiivous:   'Kotisiivous',
-    perussiivous:  'Perussiivous',
-    syvassiivous:  'Syvässiivous',
-    ikkunanpesu:   'Ikkunanpesu',
-    muuttosiivous: 'Muuttosiivous',
+    kotisiivous: 'Kotisiivous', perussiivous: 'Perussiivous',
+    syvassiivous: 'Syvässiivous', ikkunanpesu: 'Ikkunanpesu', muuttosiivous: 'Muuttosiivous',
   };
   const STATUS_LABELS = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
   const STATUS_BADGES = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
@@ -602,6 +623,10 @@
       container.innerHTML = '<div class="empty">Varausten lataus epäonnistui.</div>';
     }
   }
+
+  /* ── INIT ── */
+  lang = detectLang();
+  applyTranslations();
 </script>
 </body>
 </html>
