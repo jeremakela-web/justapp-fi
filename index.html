@@ -3,130 +3,248 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Just – Ajanvaraus</title>
+  <title>Just. – Kirjaudu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f8f9fa;
-      color: #212529;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8faf8;
+      color: #1a1a1a;
       min-height: 100vh;
     }
 
-    /* Auth view */
-    #auth-view {
+    /* ── SHARED HEADER ── */
+    .site-header {
+      background: #1a1a1a;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .logo .dot { color: #52b788; }
+    .back-link {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── AUTH VIEW ── */
+    #auth-view { display: block; }
+
+    .auth-body {
+      min-height: calc(100vh - 56px);
+      background: #f8faf8;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 24px;
+      align-items: flex-start;
+      padding: 48px 16px 64px;
     }
 
     .auth-card {
-      background: white;
-      border-radius: 12px;
-      padding: 40px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 40px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 440px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+    }
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px; }
     }
 
-    .auth-card h1 { font-size: 2rem; margin-bottom: 6px; color: #1a1a2e; }
-    .auth-card .subtitle { color: #6c757d; margin-bottom: 32px; font-size: 0.95rem; }
+    .auth-heading {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 28px;
+      line-height: 1.35;
+    }
 
-    .form-group { margin-bottom: 18px; }
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 28px;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn.active {
+      color: #2d6a4f;
+      border-bottom-color: #2d6a4f;
+    }
+    .tab-btn:hover:not(.active) { color: #374151; }
 
-    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
+    /* ── FORM ELEMENTS ── */
+    .form-group { margin-bottom: 16px; }
 
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
     input[type="email"],
     input[type="password"],
-    input[type="text"],
+    input[type="tel"],
     input[type="date"],
     input[type="time"],
     select,
     textarea {
       width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid #dee2e6;
+      padding: 11px 14px;
+      border: 1.5px solid #d1d5db;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-family: inherit;
-      transition: border-color 0.2s;
-      background: white;
+      color: #111;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: #4361ee;
+      border-color: #52b788;
+      box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
     }
 
+    /* ── BUTTONS ── */
     .btn {
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
       font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
     }
     .btn:active { transform: scale(0.98); }
 
-    .btn-primary { background: #1a1a2e; color: white; }
-    .btn-primary:hover { background: #2d2d4e; }
+    .btn-green {
+      background: #2d6a4f;
+      color: #fff;
+      margin-top: 8px;
+    }
+    .btn-green:hover { background: #245c44; }
 
-    .btn-secondary { background: #f1f3f5; color: #495057; margin-top: 10px; }
-    .btn-secondary:hover { background: #e9ecef; }
+    .btn-ghost {
+      background: none;
+      color: #6b7280;
+      border: 1.5px solid #e5e7eb;
+      margin-top: 10px;
+    }
+    .btn-ghost:hover { background: #f3f4f6; color: #374151; }
 
-    .btn-outline {
+    .btn-logout {
       background: transparent;
-      color: #dc3545;
-      border: 1.5px solid #dc3545;
-      padding: 8px 16px;
+      color: #dc2626;
+      border: 1.5px solid #dc2626;
+      padding: 7px 14px;
       border-radius: 6px;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
+      transition: background 0.15s, color 0.15s;
     }
-    .btn-outline:hover { background: #dc3545; color: white; }
+    .btn-logout:hover { background: #dc2626; color: #fff; }
 
-    .toggle-auth {
-      text-align: center;
-      margin-top: 20px;
-      color: #6c757d;
-      font-size: 0.9rem;
-    }
-    .toggle-auth a { color: #4361ee; cursor: pointer; text-decoration: none; font-weight: 500; }
-
+    /* ── MESSAGES ── */
     .msg {
-      padding: 12px;
+      padding: 11px 14px;
       border-radius: 8px;
       margin-bottom: 16px;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       display: none;
+      line-height: 1.5;
     }
-    .msg-error { background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
-    .msg-success { background: #d1e7dd; border: 1px solid #badbcc; color: #0f5132; }
+    .msg-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
+    .msg-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
 
-    /* App view */
+    /* ── CHECK EMAIL STATE ── */
+    #check-email-view {
+      display: none;
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+    .check-email-icon {
+      width: 56px;
+      height: 56px;
+      background: #f0fdf4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 1.5rem;
+    }
+    #check-email-view h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 12px;
+    }
+    #check-email-view p {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    #check-email-view strong { color: #374151; }
+
+    /* ── APP VIEW ── */
     #app-view { display: none; }
 
-    nav {
-      background: #1a1a2e;
-      color: white;
-      padding: 14px 24px;
+    .app-header {
+      background: #1a1a1a;
+      height: 56px;
+      padding: 0 24px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 10;
     }
-    .nav-logo { font-size: 1.3rem; font-weight: 700; color: #7eb8f7; }
-    .nav-user { font-size: 0.85rem; color: #adb5bd; }
+    .app-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .app-logo .dot { color: #52b788; }
+    .app-user { font-size: 0.825rem; color: #9ca3af; }
 
     .app-container {
       max-width: 720px;
@@ -135,19 +253,19 @@
     }
 
     .card {
-      background: white;
+      background: #fff;
       border-radius: 12px;
       padding: 28px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       margin-bottom: 24px;
     }
-    .card h2 { font-size: 1.2rem; margin-bottom: 20px; color: #1a1a2e; }
+    .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #111; }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
 
     .booking-item {
-      border: 1.5px solid #e9ecef;
+      border: 1.5px solid #e5e7eb;
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 10px;
@@ -157,79 +275,114 @@
       gap: 12px;
     }
     .booking-item:last-child { margin-bottom: 0; }
-    .booking-date { font-weight: 600; color: #1a1a2e; font-size: 0.95rem; }
-    .booking-meta { color: #6c757d; font-size: 0.875rem; margin-top: 3px; }
+    .booking-date { font-weight: 600; color: #111; font-size: 0.95rem; }
+    .booking-meta { color: #6b7280; font-size: 0.875rem; margin-top: 3px; }
 
     .badge {
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 600;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .badge-pending  { background: #fff3cd; color: #856404; }
-    .badge-confirmed { background: #d1e7dd; color: #0f5132; }
-    .badge-completed { background: #cff4fc; color: #055160; }
+    .badge-pending   { background: #fef9c3; color: #854d0e; }
+    .badge-confirmed { background: #f0fdf4; color: #166534; }
+    .badge-completed { background: #e0f2fe; color: #075985; }
 
-    .empty { text-align: center; color: #adb5bd; padding: 36px 0; font-size: 0.95rem; }
-    .loading { text-align: center; color: #adb5bd; padding: 24px; }
+    .empty   { text-align: center; color: #9ca3af; padding: 36px 0; font-size: 0.9rem; }
+    .loading { text-align: center; color: #9ca3af; padding: 24px; }
   </style>
 </head>
 <body>
 
-<!-- AUTH VIEW -->
+<!-- ═══════════════════════════════════════ AUTH VIEW ═══ -->
 <div id="auth-view">
-  <div class="auth-card">
-    <h1>Just</h1>
-    <p class="subtitle">Siivouspalvelujen ajanvaraus</p>
+  <header class="site-header">
+    <a href="https://getjust.fi" class="logo">Just<span class="dot">.</span></a>
+    <a href="https://getjust.fi" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Etusivulle
+    </a>
+  </header>
 
-    <div id="login-form">
-      <div class="msg msg-error" id="login-error"></div>
-      <div class="form-group">
-        <label for="login-email">Sähköposti</label>
-        <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
-      </div>
-      <div class="form-group">
-        <label for="login-password">Salasana</label>
-        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
-      </div>
-      <button class="btn btn-primary" onclick="handleLogin()">Kirjaudu sisään</button>
-      <div class="toggle-auth">Ei tiliä? <a onclick="showSignup()">Luo tili</a></div>
-    </div>
+  <div class="auth-body">
+    <div class="auth-card">
 
-    <div id="signup-form" style="display:none">
-      <div class="msg msg-error" id="signup-error"></div>
-      <div class="msg msg-success" id="signup-success"></div>
-      <div class="form-group">
-        <label for="signup-email">Sähköposti</label>
-        <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
+      <!-- Normal auth state -->
+      <div id="auth-main">
+        <h1 class="auth-heading">Kirjaudu tai luo asiakastili</h1>
+
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Kirjaudu</button>
+          <button class="tab-btn"         id="tab-signup-btn" onclick="switchTab('signup')">Luo tili</button>
+        </div>
+
+        <!-- Kirjaudu -->
+        <div id="tab-login">
+          <div class="msg msg-error" id="login-error"></div>
+          <div class="form-group">
+            <label for="login-email">Sähköposti</label>
+            <input type="email" id="login-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Salasana</label>
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <button class="btn btn-green" onclick="handleLogin()">Kirjaudu sisään</button>
+        </div>
+
+        <!-- Luo tili -->
+        <div id="tab-signup" style="display:none">
+          <div class="msg msg-error" id="signup-error"></div>
+          <div class="form-group">
+            <label for="signup-name">Koko nimi</label>
+            <input type="text" id="signup-name" placeholder="Matti Meikäläinen" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Sähköposti</label>
+            <input type="email" id="signup-email" placeholder="sinä@esimerkki.fi" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="signup-phone">Puhelinnumero</label>
+            <input type="tel" id="signup-phone" placeholder="+358 40 123 4567" autocomplete="tel" />
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Salasana</label>
+            <input type="password" id="signup-password" placeholder="Vähintään 8 merkkiä" autocomplete="new-password" />
+          </div>
+          <button class="btn btn-green" onclick="handleSignup()">Luo tili</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="signup-password">Salasana</label>
-        <input type="password" id="signup-password" placeholder="Vähintään 8 merkkiä" autocomplete="new-password" />
+
+      <!-- Check-email state (shown after successful signup) -->
+      <div id="check-email-view">
+        <div class="check-email-icon">&#9993;</div>
+        <h2>Tarkista sähköpostisi</h2>
+        <p>Lähetimme vahvistuslinkin osoitteeseen<br><strong id="confirm-email-display"></strong></p>
+        <p style="margin-top:8px">Klikkaa linkkia kirjautuaksesi sisään automaattisesti.</p>
+        <button class="btn btn-ghost" style="margin-top:24px" onclick="showAuthMain()">Takaisin kirjautumiseen</button>
       </div>
-      <button class="btn btn-primary" onclick="handleSignup()">Luo tili</button>
-      <button class="btn btn-secondary" onclick="showLogin()">Takaisin kirjautumiseen</button>
+
     </div>
   </div>
 </div>
 
-<!-- APP VIEW -->
+<!-- ═══════════════════════════════════════ APP VIEW ═══ -->
 <div id="app-view">
-  <nav>
-    <span class="nav-logo">Just</span>
+  <header class="app-header">
+    <span class="app-logo">Just<span class="dot">.</span></span>
     <div style="display:flex;align-items:center;gap:14px">
-      <span class="nav-user" id="user-email-display"></span>
-      <button class="btn-outline" onclick="handleLogout()">Kirjaudu ulos</button>
+      <span class="app-user" id="user-email-display"></span>
+      <button class="btn-logout" onclick="handleLogout()">Kirjaudu ulos</button>
     </div>
-  </nav>
+  </header>
 
   <div class="app-container">
 
     <div class="card">
       <h2>Varaa siivous</h2>
-      <div class="msg msg-error" id="booking-error"></div>
+      <div class="msg msg-error"   id="booking-error"></div>
       <div class="msg msg-success" id="booking-success"></div>
 
       <div class="form-row">
@@ -264,7 +417,7 @@
         <textarea id="booking-notes" rows="3" placeholder="Esim. pinta-ala, erityistoiveet..."></textarea>
       </div>
 
-      <button class="btn btn-primary" onclick="handleBooking()">Varaa aika</button>
+      <button class="btn btn-green" onclick="handleBooking()">Varaa aika</button>
     </div>
 
     <div class="card">
@@ -276,7 +429,7 @@
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://mebuynheutnegvvofnrl.supabase.co';
+  const SUPABASE_URL      = 'https://mebuynheutnegvvofnrl.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lYnV5bmhldXRuZWd2dm9mbnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDA3OTEsImV4cCI6MjA5MjQxNjc5MX0.IguEIQsVF1ZsTC9sjn0dZU3_Z0-';
 
   const { createClient } = supabase;
@@ -284,20 +437,23 @@
 
   let currentUser = null;
 
+  // Handles initial load (including after email confirmation redirect)
   sb.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user ?? null;
     if (currentUser) showApp();
     else showAuth();
   });
 
+  /* ── VIEW HELPERS ── */
+
   function showAuth() {
-    document.getElementById('auth-view').style.display = 'flex';
-    document.getElementById('app-view').style.display = 'none';
+    document.getElementById('auth-view').style.display = 'block';
+    document.getElementById('app-view').style.display  = 'none';
   }
 
   function showApp() {
     document.getElementById('auth-view').style.display = 'none';
-    document.getElementById('app-view').style.display = 'block';
+    document.getElementById('app-view').style.display  = 'block';
     document.getElementById('user-email-display').textContent = currentUser.email;
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -305,14 +461,23 @@
     loadBookings();
   }
 
-  function showLogin() {
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('signup-form').style.display = 'none';
+  function showAuthMain() {
+    document.getElementById('auth-main').style.display        = 'block';
+    document.getElementById('check-email-view').style.display = 'none';
   }
 
-  function showSignup() {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('signup-form').style.display = 'block';
+  function showCheckEmail(email) {
+    document.getElementById('confirm-email-display').textContent = email;
+    document.getElementById('auth-main').style.display            = 'none';
+    document.getElementById('check-email-view').style.display     = 'block';
+  }
+
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tab-login').style.display  = isLogin ? 'block' : 'none';
+    document.getElementById('tab-signup').style.display = isLogin ? 'none'  : 'block';
+    document.getElementById('tab-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('tab-signup-btn').classList.toggle('active', !isLogin);
   }
 
   function flash(id, msg, type) {
@@ -320,11 +485,13 @@
     el.className = 'msg ' + (type === 'error' ? 'msg-error' : 'msg-success');
     el.textContent = msg;
     el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 5000);
+    if (type === 'error') setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
+  /* ── AUTH HANDLERS ── */
+
   async function handleLogin() {
-    const email = document.getElementById('login-email').value.trim();
+    const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     if (!email || !password) return flash('login-error', 'Täytä kaikki kentät.', 'error');
     const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -332,18 +499,32 @@
   }
 
   async function handleSignup() {
-    const email = document.getElementById('signup-email').value.trim();
+    const name     = document.getElementById('signup-name').value.trim();
+    const email    = document.getElementById('signup-email').value.trim();
+    const phone    = document.getElementById('signup-phone').value.trim();
     const password = document.getElementById('signup-password').value;
-    if (!email || !password) return flash('signup-error', 'Täytä kaikki kentät.', 'error');
-    if (password.length < 8) return flash('signup-error', 'Salasanan on oltava vähintään 8 merkkiä.', 'error');
-    const { error } = await sb.auth.signUp({ email, password });
+
+    if (!name || !email || !password) return flash('signup-error', 'Täytä kaikki pakolliset kentät.', 'error');
+    if (password.length < 8)          return flash('signup-error', 'Salasanan on oltava vähintään 8 merkkiä.', 'error');
+
+    const { error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'https://justapp.fi',
+        data: { full_name: name, phone },
+      },
+    });
+
     if (error) flash('signup-error', error.message, 'error');
-    else flash('signup-success', 'Tili luotu! Tarkista sähköpostisi vahvistuslinkin varalta.', 'success');
+    else showCheckEmail(email);
   }
 
   async function handleLogout() {
     await sb.auth.signOut();
   }
+
+  /* ── BOOKING HANDLERS ── */
 
   async function getToken() {
     const { data } = await sb.auth.getSession();
@@ -372,7 +553,7 @@
       }
       flash('booking-success', 'Varaus tehty onnistuneesti!', 'success');
       document.getElementById('booking-address').value = '';
-      document.getElementById('booking-notes').value = '';
+      document.getElementById('booking-notes').value   = '';
       loadBookings();
     } catch {
       flash('booking-error', 'Verkkovirhe. Yritä uudelleen.', 'error');
@@ -386,8 +567,8 @@
     ikkunanpesu:   'Ikkunanpesu',
     muuttosiivous: 'Muuttosiivous',
   };
-  const STATUS_LABELS  = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
-  const STATUS_BADGES  = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
+  const STATUS_LABELS = { pending: 'Odottaa', confirmed: 'Vahvistettu', completed: 'Valmis' };
+  const STATUS_BADGES = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed' };
 
   async function loadBookings() {
     const container = document.getElementById('bookings-list');
@@ -404,9 +585,9 @@
         return;
       }
       container.innerHTML = bookings.map(b => {
-        const d = new Date(b.service_date);
+        const d       = new Date(b.service_date);
         const dateStr = d.toLocaleDateString('fi-FI', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const status = b.status || 'pending';
+        const status  = b.status || 'pending';
         return `
           <div class="booking-item">
             <div>
