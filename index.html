@@ -670,21 +670,28 @@
     const lang = detectLang();
     const raw = (lang === 'en' && bioEn) ? bioEn : bio;
     if (raw === null || raw === undefined || raw === '') return '';
+    // Already a parsed array (jsonb column)
+    if (Array.isArray(raw)) return renderPricingList(raw, lang);
+    if (typeof raw !== 'string') return '';
+    // Bio may contain label text before JSON, e.g. "HINNASTO:\n[{...}]"
+    // Find the first [ and try to parse from there
     try {
-      // Handle: already-parsed array (jsonb column), JSON string, or double-encoded string
-      let parsed = Array.isArray(raw) ? raw : JSON.parse(raw);
+      const start = raw.indexOf('[');
+      const jsonStr = start >= 0 ? raw.slice(start) : raw;
+      let parsed = JSON.parse(jsonStr);
       if (typeof parsed === 'string') parsed = JSON.parse(parsed);
-      if (Array.isArray(parsed) && parsed.length) {
-        return '<ul class="pv-pricing">' + parsed.map(item => {
-          const label = (lang === 'en' && item.en) ? item.en : (item.fi || item.name || item.id || '');
-          const unit  = item.unit  ? ` (${item.unit})`  : '';
-          const price = item.price ? ` — ${item.price}€` : '';
-          return `<li>${label}${unit}${price}</li>`;
-        }).join('') + '</ul>';
-      }
+      if (Array.isArray(parsed) && parsed.length) return renderPricingList(parsed, lang);
     } catch(e) {}
-    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
-    return `<p class="pv-bio">${text}</p>`;
+    return `<p class="pv-bio">${raw}</p>`;
+  }
+
+  function renderPricingList(items, lang) {
+    return '<ul class="pv-pricing">' + items.map(item => {
+      const label = (lang === 'en' && item.en) ? item.en : (item.fi || item.name || item.id || '');
+      const unit  = item.unit  ? ` (${item.unit})`  : '';
+      const price = item.price ? ` — ${item.price}€` : '';
+      return `<li>${label}${unit}${price}</li>`;
+    }).join('') + '</ul>';
   }
 
   function renderStars(rating) {
