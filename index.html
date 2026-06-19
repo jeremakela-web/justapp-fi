@@ -228,6 +228,8 @@
     .pv-rating-num{font-size:0.78rem;font-weight:600;color:var(--sub);margin-left:3px}
     .pv-meta{font-size:0.75rem;color:var(--sub);font-weight:500}
     .pv-bio{font-size:0.82rem;color:var(--sub);line-height:1.55;margin-bottom:12px;border-top:1px solid rgba(45,102,69,0.08);padding-top:10px}
+    .pv-pricing{font-size:0.82rem;color:var(--sub);line-height:1.6;margin:0 0 12px 0;padding:10px 0 0 0;border-top:1px solid rgba(45,102,69,0.08);list-style:none}
+    .pv-pricing li{padding:3px 0;border-bottom:1px solid rgba(45,102,69,0.05)}
     .pv-btn{width:100%;text-align:center;padding:11px;font-size:0.9rem}
     .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .cat-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:10px 10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;min-width:0}
@@ -664,6 +666,34 @@
   let activeProvider = null;
   let currentProviders = [];
 
+  function renderBio(bio, bioEn) {
+    const lang = detectLang();
+    const raw = (lang === 'en' && bioEn) ? bioEn : bio;
+    if (raw === null || raw === undefined || raw === '') return '';
+    // Already a parsed array (jsonb column)
+    if (Array.isArray(raw)) return renderPricingList(raw, lang);
+    if (typeof raw !== 'string') return '';
+    // Bio may contain label text before JSON, e.g. "HINNASTO:\n[{...}]"
+    // Find the first [ and try to parse from there
+    try {
+      const start = raw.indexOf('[');
+      const jsonStr = start >= 0 ? raw.slice(start) : raw;
+      let parsed = JSON.parse(jsonStr);
+      if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+      if (Array.isArray(parsed) && parsed.length) return renderPricingList(parsed, lang);
+    } catch(e) {}
+    return `<p class="pv-bio">${raw}</p>`;
+  }
+
+  function renderPricingList(items, lang) {
+    return '<ul class="pv-pricing">' + items.map(item => {
+      const label = (lang === 'en' && item.en) ? item.en : (item.fi || item.name || item.id || '');
+      const unit  = item.unit  ? ` (${item.unit})`  : '';
+      const price = item.price ? ` — ${item.price}€` : '';
+      return `<li>${label}${unit}${price}</li>`;
+    }).join('') + '</ul>';
+  }
+
   function renderStars(rating) {
     if (!rating) return '<span class="star-empty">☆☆☆☆☆</span>';
     const full  = Math.floor(rating);
@@ -699,24 +729,28 @@
         return;
       }
 
-      list.innerHTML = partners.map((p, i) => `
+      list.innerHTML = partners.map((p, i) => {
+        const name = p.company_name || p.contact_name || '—';
+        const initial = name.charAt(0).toUpperCase();
+        return `
         <div class="provider-card">
           <div class="pv-top">
             ${p.avatar_url
-              ? `<img src="${p.avatar_url}" class="pv-avatar" alt="${p.company_name}"
+              ? `<img src="${p.avatar_url}" class="pv-avatar" alt="${name}"
                       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
               : ''}
-            <div class="pv-avatar-fb" style="display:${p.avatar_url ? 'none' : 'flex'}">${(p.company_name || '?').charAt(0).toUpperCase()}</div>
+            <div class="pv-avatar-fb" style="display:${p.avatar_url ? 'none' : 'flex'}">${initial}</div>
             <div class="pv-info">
-              <div class="pv-name">${p.company_name || '—'}</div>
+              <div class="pv-name">${name}</div>
               ${p.city ? `<div class="pv-city">📍 ${p.city}</div>` : ''}
               <div class="pv-stars">${renderStars(p.rating)}${p.rating ? `<span class="pv-rating-num">${p.rating.toFixed(1)}</span>` : ''}</div>
               <div class="pv-meta">${p.job_count ? p.job_count + ' suoritettua työtä' : 'Uusi tekijä'}</div>
             </div>
           </div>
-          ${(p.bio || p.bio_en) ? `<p class="pv-bio">${lang === 'en' && p.bio_en ? p.bio_en : (p.bio || '')}</p>` : ''}
+          ${renderBio(p.bio, p.bio_en)}
           <button class="btn-g pv-btn" onclick="openBooking('${category}', ${i})">Varaa →</button>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     } catch(e) {
       list.innerHTML = `<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">Lataus epäonnistui</div><p class="empty-s">${e.message}</p></div>`;
     }
@@ -729,7 +763,8 @@
       ? currentProviders[providerIdx]
       : null;
 
-    const title = activeProvider ? `Varaa: ${activeProvider.company_name}` : `Varaa: ${svc}`;
+    const providerName = activeProvider ? (activeProvider.company_name || activeProvider.contact_name || activeSvc) : svc;
+    const title = `Varaa: ${providerName}`;
     document.getElementById('modal-title').textContent = title;
     document.getElementById('modal-dt').value          = '';
     document.getElementById('modal-notes').value       = '';
