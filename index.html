@@ -675,8 +675,9 @@
       if (Array.isArray(items) && items.length) {
         return '<ul class="pv-pricing">' + items.map(item => {
           const label = (lang === 'en' && item.en) ? item.en : (item.fi || item.name || item.id || '');
-          const price = item.price ? ` — alkaen ${item.price}€` : '';
-          return `<li>${label}${price}</li>`;
+          const unit  = item.unit ? ` (${item.unit})` : '';
+          const price = item.price ? ` — ${item.price}€` : '';
+          return `<li>${label}${unit}${price}</li>`;
         }).join('') + '</ul>';
       }
     } catch(e) {}
