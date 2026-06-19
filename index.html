@@ -389,7 +389,7 @@
         <div class="cat-info"><div class="cat-name">Lumenluonti</div><div class="cat-price">alkaen 40 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
       <div class="cat-card" onclick="openBooking('Ikkunanpesu')">
-        <img src="https://images.unsplash.com/photo-1521219189973-b3fd4d45ee35?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
+        <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Ikkunanpesu</div><div class="cat-price">alkaen 30 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
     </div>
@@ -739,6 +739,22 @@
       pfLoaded = false;
     } catch(e) { alert('Virhe tallennuksessa: ' + e.message); }
   }
+
+  /* ── Image error fallback ── */
+  const IMG_EMOJI = {
+    'Autopesu':'🚗','Renkaanvaihto':'🔧','Kodinsiivous':'🧹',
+    'Muutto':'📦','Kodinkorjaus':'🔨','Puutarhatyöt':'🌿',
+    'Lumenluonti':'❄️','Ikkunanpesu':'🪟'
+  };
+  document.querySelectorAll('.cat-img').forEach(img => {
+    img.addEventListener('error', function() {
+      const span = document.createElement('span');
+      span.className = 'cat-img';
+      span.style.cssText = 'font-size:1.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--g5)';
+      span.textContent = IMG_EMOJI[img.alt] || '🔧';
+      img.parentNode.replaceChild(span, img);
+    });
+  });
 
   /* ── INIT ── */
   lang = detectLang();
