@@ -44,7 +44,7 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch { return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'Invalid JSON' }) }; }
 
-  const { service_type, scheduled_at, notes } = body;
+  const { service_type, scheduled_at, notes, provider_id } = body;
 
   if (!service_type) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'service_type required' }) };
@@ -55,9 +55,10 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       user_id:      user.id,
       service_type,
-      scheduled_at: scheduled_at || null,
-      notes:        notes        || null,
+      scheduled_at: scheduled_at  || null,
+      notes:        notes         || null,
       status:       'pending',
+      provider_id:  provider_id   || null,
     }),
   });
 

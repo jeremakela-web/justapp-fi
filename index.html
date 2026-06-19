@@ -209,6 +209,26 @@
     .sec-sub{color:var(--sub);font-size:0.8rem;margin-bottom:18px}
     .welcome{color:var(--sub);font-size:0.88rem;margin-bottom:18px}
     .welcome strong{color:var(--g1)}
+    /* ── Provider selection pane ── */
+    .pv-back{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;color:var(--sub);padding:0;margin-bottom:16px;transition:color 0.15s}
+    .pv-back:hover{color:var(--g1)}
+    .providers-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:2px}
+    .providers-sub{font-size:0.8rem;color:var(--sub);margin-bottom:18px}
+    .provider-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:16px;padding:16px;margin-bottom:12px}
+    .pv-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:10px}
+    .pv-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0}
+    .pv-avatar-fb{width:64px;height:64px;border-radius:50%;background:var(--g1);color:#fff;font-family:"Syne",sans-serif;font-weight:800;font-size:1.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .pv-info{min-width:0;flex:1}
+    .pv-name{font-family:"Syne",sans-serif;font-weight:700;font-size:0.95rem;color:var(--ink);margin-bottom:2px}
+    .pv-city{font-size:0.75rem;color:var(--sub);margin-bottom:4px}
+    .pv-stars{font-size:1.05rem;margin-bottom:2px;line-height:1.3}
+    .star-full{color:#f59e0b}
+    .star-half{color:#f59e0b;opacity:0.55}
+    .star-empty{color:#d1d5db}
+    .pv-rating-num{font-size:0.78rem;font-weight:600;color:var(--sub);margin-left:3px}
+    .pv-meta{font-size:0.75rem;color:var(--sub);font-weight:500}
+    .pv-bio{font-size:0.82rem;color:var(--sub);line-height:1.55;margin-bottom:12px;border-top:1px solid rgba(45,102,69,0.08);padding-top:10px}
+    .pv-btn{width:100%;text-align:center;padding:11px;font-size:0.9rem}
     .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .cat-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:10px 10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;min-width:0}
     .cat-card:hover{border-color:rgba(45,102,69,0.3);background:var(--g6);transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,102,69,0.1)}
@@ -360,39 +380,50 @@
     <div class="sec-title">Valitse palvelu</div>
     <p class="sec-sub">Kaikki tekijät laadunvarmistettuja</p>
     <div class="cat-grid">
-      <div class="cat-card" onclick="openBooking('Autopesu')">
+      <div class="cat-card" onclick="openProviders('Autopesu')">
         <img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Autopesu" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Autopesu</div><div class="cat-price">alkaen 25 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Renkaanvaihto')">
+      <div class="cat-card" onclick="openProviders('Renkaanvaihto')">
         <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Renkaanvaihto" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Renkaanvaihto</div><div class="cat-price">alkaen 50 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Kodinsiivous')">
+      <div class="cat-card" onclick="openProviders('Kodinsiivous')">
         <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Kodinsiivous" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Kodinsiivous</div><div class="cat-price">alkaen 60 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Muutto')">
+      <div class="cat-card" onclick="openProviders('Muutto')">
         <img src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Muutto" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Muutto</div><div class="cat-price">alkaen 80 €/h</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Kodinkorjaus')">
+      <div class="cat-card" onclick="openProviders('Kodinkorjaus')">
         <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Kodinkorjaus" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Kodinkorjaus</div><div class="cat-price">alkaen 45 €/h</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Puutarhatyöt')">
+      <div class="cat-card" onclick="openProviders('Puutarhatyöt')">
         <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Puutarhatyöt" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Puutarhatyöt</div><div class="cat-price">alkaen 35 €/h</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Lumenluonti')">
+      <div class="cat-card" onclick="openProviders('Lumenluonti')">
         <img src="https://images.unsplash.com/photo-1548777123-e216912df7d8?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Lumenluonti" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Lumenluonti</div><div class="cat-price">alkaen 40 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
-      <div class="cat-card" onclick="openBooking('Ikkunanpesu')">
+      <div class="cat-card" onclick="openProviders('Ikkunanpesu')">
         <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=80&h=80&fit=crop&auto=format&q=80" class="cat-img" alt="Ikkunanpesu" loading="eager" width="80" height="80">
         <div class="cat-info"><div class="cat-name">Ikkunanpesu</div><div class="cat-price">alkaen 30 €</div><span class="cat-badge">Saatavilla</span></div>
       </div>
     </div>
+  </div>
+
+  <!-- PROVIDERS PANE (not a bottom-nav tab, shown on category click) -->
+  <div class="tab-pane" id="pane-providers">
+    <button class="pv-back" onclick="showTab('services')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Takaisin
+    </button>
+    <div class="providers-title" id="providers-title">Tekijät</div>
+    <p class="providers-sub" id="providers-sub">Valitse tekijä</p>
+    <div id="providers-list"><div class="spin-wrap"><div class="spin"></div></div></div>
   </div>
 
   <!-- BOOKINGS TAB -->
@@ -619,6 +650,7 @@
 
   /* ── APP: Tab navigation ── */
   function showTab(name) {
+    document.getElementById('pane-providers').classList.remove('on');
     ['services', 'bookings', 'profile'].forEach(t => {
       document.getElementById('pane-' + t).classList.toggle('on', t === name);
       document.getElementById('nav-'  + t).classList.toggle('on', t === name);
@@ -627,16 +659,82 @@
     if (name === 'profile'  && !pfLoaded) loadProfile();
   }
 
-  /* ── APP: Booking modal ── */
-  let activeSvc = '';
+  /* ── APP: Provider selection ── */
+  let activeSvc      = '';
+  let activeProvider = null;
+  let currentProviders = [];
 
-  function openBooking(svc) {
-    activeSvc = svc;
-    document.getElementById('modal-title').textContent   = 'Varaa: ' + svc;
-    document.getElementById('modal-dt').value            = '';
-    document.getElementById('modal-notes').value         = '';
-    document.getElementById('modal-err').style.display   = 'none';
-    document.getElementById('modal-ok').style.display    = 'none';
+  function renderStars(rating) {
+    if (!rating) return '<span class="star-empty">☆☆☆☆☆</span>';
+    const full  = Math.floor(rating);
+    const half  = (rating - full) >= 0.5 ? 1 : 0;
+    const empty = 5 - full - half;
+    return '<span class="star-full">' + '★'.repeat(full) + '</span>' +
+           (half ? '<span class="star-half">★</span>' : '') +
+           '<span class="star-empty">' + '☆'.repeat(empty) + '</span>';
+  }
+
+  async function openProviders(category) {
+    activeProvider = null;
+    currentProviders = [];
+
+    document.getElementById('pane-providers').classList.add('on');
+    ['services', 'bookings', 'profile'].forEach(t =>
+      document.getElementById('pane-' + t).classList.remove('on')
+    );
+
+    document.getElementById('providers-title').textContent = category + ' — tekijät';
+    document.getElementById('providers-sub').textContent   = 'Valitse tekijä varataksesi ajan';
+    const list = document.getElementById('providers-list');
+    list.innerHTML = '<div class="spin-wrap"><div class="spin"></div></div>';
+
+    try {
+      const res = await fetch('/.netlify/functions/get-partners?category=' + encodeURIComponent(category));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const partners = await res.json();
+      currentProviders = partners;
+
+      if (!partners.length) {
+        list.innerHTML = '<div class="empty"><div class="empty-ic">👷</div><div class="empty-t">Ei tekijöitä saatavilla</div><p class="empty-s">Kategoriaan ei ole tällä hetkellä aktiivisia tekijöitä.</p></div>';
+        return;
+      }
+
+      list.innerHTML = partners.map((p, i) => `
+        <div class="provider-card">
+          <div class="pv-top">
+            ${p.avatar_url
+              ? `<img src="${p.avatar_url}" class="pv-avatar" alt="${p.company_name}"
+                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              : ''}
+            <div class="pv-avatar-fb" style="display:${p.avatar_url ? 'none' : 'flex'}">${(p.company_name || '?').charAt(0).toUpperCase()}</div>
+            <div class="pv-info">
+              <div class="pv-name">${p.company_name || '—'}</div>
+              ${p.city ? `<div class="pv-city">📍 ${p.city}</div>` : ''}
+              <div class="pv-stars">${renderStars(p.rating)}${p.rating ? `<span class="pv-rating-num">${p.rating.toFixed(1)}</span>` : ''}</div>
+              <div class="pv-meta">${p.job_count ? p.job_count + ' suoritettua työtä' : 'Uusi tekijä'}</div>
+            </div>
+          </div>
+          ${(p.bio || p.bio_en) ? `<p class="pv-bio">${lang === 'en' && p.bio_en ? p.bio_en : (p.bio || '')}</p>` : ''}
+          <button class="btn-g pv-btn" onclick="openBooking('${category}', ${i})">Varaa →</button>
+        </div>`).join('');
+    } catch(e) {
+      list.innerHTML = `<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">Lataus epäonnistui</div><p class="empty-s">${e.message}</p></div>`;
+    }
+  }
+
+  /* ── APP: Booking modal ── */
+  function openBooking(svc, providerIdx) {
+    activeSvc      = svc;
+    activeProvider = (providerIdx !== undefined && providerIdx !== null)
+      ? currentProviders[providerIdx]
+      : null;
+
+    const title = activeProvider ? `Varaa: ${activeProvider.company_name}` : `Varaa: ${svc}`;
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-dt').value          = '';
+    document.getElementById('modal-notes').value       = '';
+    document.getElementById('modal-err').style.display = 'none';
+    document.getElementById('modal-ok').style.display  = 'none';
     const btn = document.getElementById('modal-confirm');
     btn.disabled = false; btn.textContent = 'Vahvista varaus →';
     document.getElementById('modal-bg').classList.add('open');
@@ -660,7 +758,8 @@
         body: JSON.stringify({
           service_type: activeSvc,
           scheduled_at: new Date(dt).toISOString(),
-          notes: notes || null,
+          notes:        notes || null,
+          provider_id:  activeProvider ? activeProvider.id : null,
         }),
       });
       const json = await res.json();
