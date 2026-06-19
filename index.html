@@ -668,19 +668,22 @@
 
   function renderBio(bio, bioEn) {
     const lang = detectLang();
-    const text = (lang === 'en' && bioEn) ? bioEn : (bio || '');
-    if (!text) return '';
+    const raw = (lang === 'en' && bioEn) ? bioEn : bio;
+    if (raw === null || raw === undefined || raw === '') return '';
     try {
-      const items = JSON.parse(text);
-      if (Array.isArray(items) && items.length) {
-        return '<ul class="pv-pricing">' + items.map(item => {
+      // Handle: already-parsed array (jsonb column), JSON string, or double-encoded string
+      let parsed = Array.isArray(raw) ? raw : JSON.parse(raw);
+      if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+      if (Array.isArray(parsed) && parsed.length) {
+        return '<ul class="pv-pricing">' + parsed.map(item => {
           const label = (lang === 'en' && item.en) ? item.en : (item.fi || item.name || item.id || '');
-          const unit  = item.unit ? ` (${item.unit})` : '';
+          const unit  = item.unit  ? ` (${item.unit})`  : '';
           const price = item.price ? ` — ${item.price}€` : '';
           return `<li>${label}${unit}${price}</li>`;
         }).join('') + '</ul>';
       }
     } catch(e) {}
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
     return `<p class="pv-bio">${text}</p>`;
   }
 
