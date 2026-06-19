@@ -654,18 +654,29 @@
     const btn = document.getElementById('modal-confirm');
     btn.disabled = true; btn.textContent = 'Lähetetään…';
     try {
-      await api('createBooking', {
-        service_type: activeSvc,
-        scheduled_at: new Date(dt).toISOString(),
-        notes: notes || null,
+      const res = await fetch('/.netlify/functions/book-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+        body: JSON.stringify({
+          service_type: activeSvc,
+          scheduled_at: new Date(dt).toISOString(),
+          notes: notes || null,
+        }),
       });
+      const json = await res.json();
+      if (!json.ok) {
+        const msg = json.hint ? json.error + ' — ' + json.hint : json.error;
+        errEl.textContent = 'Virhe: ' + msg; errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Vahvista varaus →';
+        return;
+      }
       okEl.textContent = 'Varaus lähetetty! Tekijä vahvistaa sen pian.';
       okEl.style.display = 'block';
       btn.textContent = 'Lähetetty ✓';
       bkLoaded = false;
       setTimeout(closeModal, 2200);
     } catch(e) {
-      errEl.textContent = 'Virhe: ' + e.message; errEl.style.display = 'block';
+      errEl.textContent = 'Verkkovirhe: ' + e.message; errEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Vahvista varaus →';
     }
   }
