@@ -1,9 +1,31 @@
-const { createClient } = require('@supabase/supabase-js');
+const SUPA_URL = 'https://mebuynheutnegvvofnrl.supabase.co';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+async function verifyUser(authHeader) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.slice(7);
+  const res = await fetch(`${SUPA_URL}/auth/v1/user`, {
+    headers: {
+      apikey: process.env.SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function supaFetch(path, options = {}) {
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  return fetch(`${SUPA_URL}${path}`, {
+    ...options,
+    headers: {
+      apikey: key,
+      Authorization: 'Bearer ' + key,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+      ...(options.headers || {}),
+    },
+  });
+}
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -11,67 +33,50 @@ const CORS = {
   'Content-Type': 'application/json',
 };
 
-function resp(body, status) {
-  return { statusCode: status, headers: CORS, body: JSON.stringify(body) };
-}
-
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: CORS, body: '' };
-  if (event.httpMethod !== 'POST') return resp({ ok: false, error: 'Method not allowed' }, 405);
+  if (event.httpMethod !== 'POST') return { statusCode: 405, headers: CORS, body: JSON.stringify({ ok: false, error: 'Method not allowed' }) };
 
-  const token = (event.headers.authorization || '').replace('Bearer ', '').trim();
-  if (!token) return resp({ ok: false, error: 'Unauthorized' }, 401);
-
-  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user) return resp({ ok: false, error: 'Unauthorized' }, 401);
+  const user = await verifyUser(event.headers.authorization);
+  if (!user) return { statusCode: 401, headers: CORS, body: JSON.stringify({ ok: false, error: 'Unauthorized' }) };
 
   let body;
   try { body = JSON.parse(event.body || '{}'); }
-  catch { return resp({ ok: false, error: 'Invalid JSON' }, 400); }
+  catch { return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'Invalid JSON' }) }; }
 
-  const {
-    service_type,
-    scheduled_at,
-    notes,
-    provider_id,
-    customer_name,
-    customer_email,
-    service_details,
-    price,
-  } = body;
+  const { service_type, scheduled_at, notes } = body;
 
-  if (!service_type || !scheduled_at) {
-    return resp({ ok: false, error: 'Missing required fields', hint: 'service_type and scheduled_at are required' }, 400);
+  if (!service_type) {
+    return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'service_type required' }) };
   }
 
-  const row = {
-    user_id:      user.id,
-    service_type,
-    scheduled_at,
-    status:       'pending',
-    notes:        notes        || null,
-    provider_id:  provider_id  || null,
-    customer_name:  customer_name  || user.user_metadata?.full_name || null,
-    customer_email: customer_email || user.email || null,
-    service_details: service_details || null,
-    price:        price !== undefined ? price : null,
-  };
+  const res = await supaFetch('/rest/v1/bookings', {
+    method: 'POST',
+    body: JSON.stringify({
+      user_id:      user.id,
+      service_type,
+      scheduled_at: scheduled_at || null,
+      notes:        notes        || null,
+      status:       'pending',
+    }),
+  });
 
-  const { data, error } = await supabase
-    .from('bookings')
-    .insert(row)
-    .select()
-    .single();
+  const data = await res.json();
 
-  if (error) {
-    return resp({
-      ok:      false,
-      error:   error.message,
-      hint:    error.hint    || null,
-      details: error.details || null,
-      code:    error.code    || null,
-    }, 500);
+  if (!res.ok) {
+    const row = Array.isArray(data) ? data[0] : data;
+    return {
+      statusCode: 500, headers: CORS,
+      body: JSON.stringify({
+        ok:      false,
+        error:   row?.message   || 'Insert failed',
+        hint:    row?.hint      || null,
+        details: row?.details   || null,
+        code:    row?.code      || null,
+      }),
+    };
   }
 
-  return resp({ ok: true, bookingId: data.id, booking: data }, 201);
+  const row = Array.isArray(data) ? data[0] : data;
+  return { statusCode: 201, headers: CORS, body: JSON.stringify({ ok: true, bookingId: row?.id, booking: row }) };
 };
