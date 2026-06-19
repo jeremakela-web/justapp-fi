@@ -293,6 +293,20 @@
     .btn-confirm:disabled{opacity:0.6;cursor:default}
     .modal-err{color:#dc2626;font-size:0.8rem;margin-bottom:8px;display:none}
     .modal-ok{color:var(--g1);font-size:0.82rem;background:var(--g6);border:1px solid var(--g5);border-radius:7px;padding:8px 12px;margin-bottom:8px;display:none}
+    /* ── Routing windows ── */
+    .rw-slot{padding:10px 12px;border:1.5px solid rgba(45,102,69,0.13);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;background:var(--off)}
+    .rw-slot:active,.rw-slot.active{border-color:var(--g1);background:rgba(45,102,69,0.05)}
+    .rw-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .rw-time{font-family:"Syne",sans-serif;font-weight:700;font-size:0.88rem;color:var(--ink)}
+    .rw-cost{font-size:0.67rem;font-weight:700;padding:2px 8px;border-radius:5px;background:rgba(45,102,69,0.1);color:var(--g1);white-space:nowrap;flex-shrink:0}
+    .rw-provider{font-size:0.73rem;color:var(--sub);margin-top:2px}
+    .rw-cluster{font-size:0.71rem;color:var(--g1);font-weight:600;margin-top:4px;padding:3px 8px;background:rgba(45,102,69,0.08);border-radius:5px}
+    .btn-rw{display:block;margin-top:8px;width:100%;padding:10px;background:var(--g1);color:#fff;border:none;border-radius:9px;font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;transition:background 0.15s}
+    .btn-rw:hover{background:var(--g2)}
+    .btn-rw:disabled{opacity:0.6;cursor:default}
+    .geocode-hint{font-size:0.71rem;color:var(--sub);margin-top:3px;line-height:1.4}
+    .rw-section-label{font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+    .rw-osm-attr{font-size:0.62rem;color:var(--sub);margin-top:5px}
   </style>
 </head>
 <body>
@@ -467,12 +481,23 @@
     <div class="modal-err" id="modal-err"></div>
     <div class="modal-ok"  id="modal-ok"></div>
     <div class="mf">
-      <label>Toivottu päivä ja aika</label>
+      <label>Palveluosoite</label>
+      <input type="text" id="modal-addr" placeholder="Katuosoite, kaupunki" autocomplete="street-address" oninput="onAddrInput(this.value)">
+      <div class="geocode-hint" id="geocode-status" style="display:none"></div>
+    </div>
+    <div class="mf" id="routing-date-row" style="display:none">
+      <label>Toivottu päivä</label>
+      <input type="date" id="modal-date">
+      <button class="btn-rw" id="btn-find-slots" onclick="fetchRoutingWindows()">Etsi parhaita aikoja →</button>
+    </div>
+    <div id="routing-windows" style="margin-bottom:4px"></div>
+    <div class="mf">
+      <label>Tai valitse aika suoraan</label>
       <input type="datetime-local" id="modal-dt">
     </div>
     <div class="mf">
       <label>Lisätiedot (vapaaehtoinen)</label>
-      <textarea id="modal-notes" placeholder="Esim. osoite, toiveet, tarkemmat tiedot…"></textarea>
+      <textarea id="modal-notes" placeholder="Lisätiedot tai toiveet…"></textarea>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel"  onclick="closeModal()">Peruuta</button>
@@ -670,6 +695,10 @@
   let activeProvider = null;
   let currentProviders = [];
 
+  /* ── APP: Routing state ── */
+  let bookingLat = null, bookingLng = null, bookingPostal = null;
+  let selectedWindow = null, routingWindows = [];
+
   function renderBio(bio, bioEn) {
     const lang = detectLang();
     const raw = (lang === 'en' && bioEn) ? bioEn : bio;
@@ -770,16 +799,122 @@
     const providerName = activeProvider ? (activeProvider.company_name || activeProvider.contact_name || activeSvc) : svc;
     const title = `Varaa: ${providerName}`;
     document.getElementById('modal-title').textContent = title;
-    document.getElementById('modal-dt').value          = '';
-    document.getElementById('modal-notes').value       = '';
-    document.getElementById('modal-err').style.display = 'none';
-    document.getElementById('modal-ok').style.display  = 'none';
+    document.getElementById('modal-addr').value              = '';
+    document.getElementById('geocode-status').style.display  = 'none';
+    document.getElementById('routing-date-row').style.display = 'none';
+    document.getElementById('routing-windows').innerHTML      = '';
+    document.getElementById('modal-dt').value                 = '';
+    document.getElementById('modal-notes').value              = '';
+    document.getElementById('modal-err').style.display        = 'none';
+    document.getElementById('modal-ok').style.display         = 'none';
+    bookingLat = null; bookingLng = null; bookingPostal = null;
+    selectedWindow = null; routingWindows = [];
     const btn = document.getElementById('modal-confirm');
     btn.disabled = false; btn.textContent = 'Vahvista varaus →';
     document.getElementById('modal-bg').classList.add('open');
   }
 
   function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+
+  /* ── Geocoding + routing ── */
+  function onAddrInput(val) {
+    document.getElementById('routing-date-row').style.display = val.trim().length > 4 ? '' : 'none';
+    if (!val.trim()) document.getElementById('routing-windows').innerHTML = '';
+    bookingLat = null; bookingLng = null;
+  }
+
+  async function geocodeAddress(addr) {
+    const el = document.getElementById('geocode-status');
+    el.textContent = 'Haetaan osoitetta…'; el.style.display = 'block';
+    try {
+      const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(addr) +
+                  '&countrycodes=fi&format=json&limit=1&addressdetails=1';
+      const res = await fetch(url, { headers: { 'User-Agent': 'justapp.fi/1.0', 'Accept-Language': 'fi' } });
+      const data = await res.json();
+      if (!data.length) { el.textContent = '⚠ Osoitetta ei löydy — tarkista kirjoitus.'; return false; }
+      bookingLat    = parseFloat(data[0].lat);
+      bookingLng    = parseFloat(data[0].lon);
+      bookingPostal = data[0].address?.postcode || null;
+      const label   = [data[0].address?.road, data[0].address?.city || data[0].address?.town].filter(Boolean).join(', ');
+      el.textContent = '✓ ' + (label || data[0].display_name.split(',')[0]);
+      return true;
+    } catch(e) { el.textContent = '⚠ Geokoodaus epäonnistui.'; return false; }
+  }
+
+  async function fetchRoutingWindows() {
+    const addr  = document.getElementById('modal-addr').value.trim();
+    const date  = document.getElementById('modal-date').value;
+    const errEl = document.getElementById('modal-err');
+    errEl.style.display = 'none';
+    if (!addr) { errEl.textContent = 'Anna palveluosoite ensin.'; errEl.style.display = 'block'; return; }
+    if (!date) { errEl.textContent = 'Valitse päivä.';            errEl.style.display = 'block'; return; }
+
+    const btn = document.getElementById('btn-find-slots');
+    btn.disabled = true; btn.textContent = 'Haetaan…';
+
+    if (!bookingLat || !bookingLng) {
+      const ok = await geocodeAddress(addr);
+      if (!ok) { btn.disabled = false; btn.textContent = 'Etsi parhaita aikoja →'; return; }
+    }
+
+    const rwEl = document.getElementById('routing-windows');
+    rwEl.innerHTML = '<div class="spin-wrap" style="padding:16px"><div class="spin"></div></div>';
+
+    try {
+      const res = await fetch('/.netlify/functions/calculate-routing-windows', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_lat:           bookingLat,
+          service_lng:           bookingLng,
+          service_type:          activeSvc,
+          requested_date:        date,
+          preferred_provider_id: activeProvider ? activeProvider.id : null,
+          postal_code:           bookingPostal,
+        }),
+      });
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
+      routingWindows = json.windows || [];
+      renderRoutingWindows(routingWindows, json.message);
+    } catch(e) {
+      rwEl.innerHTML = `<div style="font-size:0.8rem;color:#c00;padding:6px 0">Virhe: ${e.message}</div>`;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Etsi parhaita aikoja →';
+    }
+  }
+
+  function renderRoutingWindows(windows, emptyMsg) {
+    const el = document.getElementById('routing-windows');
+    if (!windows.length) {
+      el.innerHTML = `<div style="font-size:0.8rem;color:var(--sub);padding:6px 0">${emptyMsg || 'Ei vapaita aikoja tälle päivälle — kokeile toista päivää.'}</div>`;
+      return;
+    }
+    el.innerHTML = '<div class="rw-section-label">Ehdotetut ajat — edullisin reitti ensin</div>' +
+      windows.map((w, i) => {
+        const ts = new Date(w.window_start), te = new Date(w.window_end);
+        const fmt = d => d.toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+        const cost = w.marginal_cost_km <= 1 ? 'Paras reitti' : `+${w.marginal_cost_km} km`;
+        return `<div class="rw-slot" id="rw-${i}" onclick="selectWindow(${i})">
+          <div class="rw-head">
+            <span class="rw-time">${fmt(ts)}–${fmt(te)}</span>
+            <span class="rw-cost">${cost}</span>
+          </div>
+          <div class="rw-provider">${w.provider_name}</div>
+          ${w.cluster_message ? `<div class="rw-cluster">⚡ ${w.cluster_message}</div>` : ''}
+        </div>`;
+      }).join('') +
+      '<div class="rw-osm-attr">© OpenStreetMap contributors</div>';
+  }
+
+  function selectWindow(idx) {
+    selectedWindow = routingWindows[idx];
+    const dt  = new Date(selectedWindow.window_start);
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('modal-dt').value =
+      `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+    document.querySelectorAll('.rw-slot').forEach((el, i) => el.classList.toggle('active', i === idx));
+  }
 
   async function confirmBooking() {
     const dt    = document.getElementById('modal-dt').value;
@@ -795,10 +930,17 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
         body: JSON.stringify({
-          service_type: activeSvc,
-          scheduled_at: new Date(dt).toISOString(),
-          notes:        notes || null,
-          provider_id:  activeProvider ? activeProvider.id : null,
+          service_type:           activeSvc,
+          scheduled_at:           new Date(dt).toISOString(),
+          notes:                  notes || null,
+          provider_id:            activeProvider ? activeProvider.id : null,
+          service_lat:            bookingLat || null,
+          service_lng:            bookingLng || null,
+          service_address:        document.getElementById('modal-addr').value.trim() || null,
+          postal_code:            bookingPostal || null,
+          route_marginal_cost_km: selectedWindow ? selectedWindow.marginal_cost_km : null,
+          requested_window_start: selectedWindow ? selectedWindow.window_start : null,
+          requested_window_end:   selectedWindow ? selectedWindow.window_end   : null,
         }),
       });
       const json = await res.json();
