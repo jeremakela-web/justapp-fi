@@ -243,8 +243,10 @@
     .cat-badge{font-size:0.56rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:rgba(45,102,69,0.08);color:var(--g1);padding:1px 6px;border-radius:4px;display:inline-block;margin-top:3px}
     .bk-list{display:flex;flex-direction:column;gap:10px}
     .bk-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:12px;padding:14px 16px}
+    .bk-card.cancelled{opacity:0.5}
     .bk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
     .bk-svc{font-family:"Syne",sans-serif;font-weight:700;font-size:0.9rem;color:var(--ink)}
+    .bk-card.cancelled .bk-svc{text-decoration:line-through}
     .bk-badge{font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:5px}
     .s-pending{background:rgba(200,168,75,0.12);color:#8a6800}
     .s-confirmed{background:rgba(45,102,69,0.1);color:var(--g1)}
@@ -252,6 +254,8 @@
     .s-cancelled{background:rgba(220,0,0,0.08);color:#c00}
     .bk-date{font-size:0.78rem;color:var(--sub);margin-bottom:3px}
     .bk-notes{font-size:0.75rem;color:var(--sub);font-style:italic}
+    .bk-cancel{margin-top:10px;padding:6px 14px;font-size:0.75rem;font-weight:600;font-family:inherit;background:none;border:1.5px solid rgba(200,0,0,0.25);color:#c00;border-radius:8px;cursor:pointer;transition:background 0.15s}
+    .bk-cancel:hover{background:rgba(200,0,0,0.06)}
     .pf-card{background:#fff;border:1.5px solid rgba(45,102,69,0.1);border-radius:14px;padding:20px}
     .pf-avatar{width:60px;height:60px;border-radius:50%;background:var(--g1);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:12px}
     .pf-name{font-family:"Syne",sans-serif;font-weight:800;font-size:1.05rem;color:var(--ink);margin-bottom:2px}
@@ -834,16 +838,41 @@
         return;
       }
       el.innerHTML = '<div class="bk-list">' + data.map(b => `
-        <div class="bk-card">
+        <div class="bk-card${b.status === 'cancelled' ? ' cancelled' : ''}" id="bk-${b.id}">
           <div class="bk-head">
             <span class="bk-svc">${b.service_type}</span>
             <span class="bk-badge ${STATUS_CLS[b.status] || 's-pending'}">${STATUS_LABEL[b.status] || b.status}</span>
           </div>
           ${b.scheduled_at ? `<div class="bk-date">📅 ${fmtDt(b.scheduled_at)}</div>` : ''}
           ${b.notes ? `<div class="bk-notes">"${b.notes}"</div>` : ''}
+          ${b.status !== 'cancelled' ? `<button class="bk-cancel" onclick="cancelBooking('${b.id}', this)">Peruuta varaus</button>` : ''}
         </div>`).join('') + '</div>';
     } catch(e) {
       el.innerHTML = `<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">Lataus epäonnistui</div><p class="empty-s">${e.message}</p></div>`;
+    }
+  }
+
+  async function cancelBooking(id, btn) {
+    if (!confirm('Haluatko varmasti peruuttaa tämän varauksen?')) return;
+    btn.disabled = true;
+    btn.textContent = 'Peruutetaan…';
+    try {
+      const res = await fetch('/.netlify/functions/cancel-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+        body: JSON.stringify({ booking_id: id }),
+      });
+      const json = await res.json();
+      if (!json.ok) { btn.disabled = false; btn.textContent = 'Peruuta varaus'; alert('Virhe: ' + json.error); return; }
+      const card = document.getElementById('bk-' + id);
+      card.classList.add('cancelled');
+      card.querySelector('.bk-svc').style.textDecoration = 'line-through';
+      card.querySelector('.bk-badge').className = 'bk-badge s-cancelled';
+      card.querySelector('.bk-badge').textContent = 'Peruutettu';
+      btn.remove();
+    } catch(e) {
+      btn.disabled = false; btn.textContent = 'Peruuta varaus';
+      alert('Verkkovirhe: ' + e.message);
     }
   }
 
