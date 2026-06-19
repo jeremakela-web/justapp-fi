@@ -44,7 +44,10 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch { return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'Invalid JSON' }) }; }
 
-  const { service_type, scheduled_at, notes, provider_id } = body;
+  const { service_type, scheduled_at, notes, provider_id,
+          service_lat, service_lng, service_address, postal_code,
+          service_category_id, requested_window_start, requested_window_end,
+          estimated_duration_min, route_marginal_cost_km } = body;
 
   if (!service_type) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'service_type required' }) };
@@ -53,12 +56,21 @@ exports.handler = async (event) => {
   const res = await supaFetch('/rest/v1/bookings', {
     method: 'POST',
     body: JSON.stringify({
-      user_id:      user.id,
+      user_id:                user.id,
       service_type,
-      scheduled_at: scheduled_at  || null,
-      notes:        notes         || null,
-      status:       'pending',
-      provider_id:  provider_id   || null,
+      scheduled_at:           scheduled_at           || null,
+      notes:                  notes                  || null,
+      status:                 'pending',
+      provider_id:            provider_id            || null,
+      service_lat:            service_lat            || null,
+      service_lng:            service_lng            || null,
+      service_address:        service_address        || null,
+      postal_code:            postal_code            || null,
+      service_category_id:    service_category_id    || null,
+      requested_window_start: requested_window_start || null,
+      requested_window_end:   requested_window_end   || null,
+      estimated_duration_min: estimated_duration_min || null,
+      route_marginal_cost_km: route_marginal_cost_km || null,
     }),
   });
 
